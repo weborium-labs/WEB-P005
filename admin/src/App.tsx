@@ -5,9 +5,6 @@ import { SignIn, AdminLanding } from "./pages/page.index"
 const App = () => {
   return (
     <div>
-      <div>
-        <ResponsiveAppBar />
-      </div>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<AdminLanding />}></Route>
