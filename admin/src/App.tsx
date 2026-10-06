@@ -1,13 +1,16 @@
 import ResponsiveAppBar from "./components/ResponsiveAppBar"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
-import SignIn from "./pages/SignIn"
+import { SignIn, AdminLanding } from "./pages/page.index"
 
 const App = () => {
   return (
     <div>
+      <div>
+        <ResponsiveAppBar />
+      </div>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<>hi</>}></Route>
+          <Route path="/" element={<AdminLanding />}></Route>
           <Route path="/auth/signIn" element={<SignIn />}></Route>
           <Route path="/dashboard" element={<ResponsiveAppBar />}></Route>
         </Routes>
