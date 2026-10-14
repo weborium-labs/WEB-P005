@@ -1,7 +1,7 @@
 import express from "express";
 import "./load-env.js";
 import { Request, Response } from "express";
-import defaultRouter from "./router/default.router.js";
+import v1Router from "./router/default.router.js";
 import { ApiResponse } from "./utils/ApiResponse.js";
 
 const app = express();
@@ -14,7 +14,7 @@ app.get("/", (req: Request, res: Response) => {
     .json(new ApiResponse(200, "", "Weborium - P005 server is running.."));
 });
 
-app.use("/api/v1", defaultRouter);
+app.use("/api/v1", v1Router);
 
 app.listen(port, () => {
   console.log("Weborium - POO5 is listening on port:", port);
