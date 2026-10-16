@@ -1,12 +1,13 @@
 import express from "express";
 import "./load-env.js";
 import { Request, Response } from "express";
-import v1Router from "./router/default.router.js";
+import v1Router from "./router/api-v1.router.js";
 import { ApiResponse } from "./utils/ApiResponse.js";
+import config from "./config/config.js";
 
 const app = express();
 
-const port = process.env.PORT || 3000;
+const port = config.port || 3000;
 
 app.get("/", (req: Request, res: Response) => {
   res
