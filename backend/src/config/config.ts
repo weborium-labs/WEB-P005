@@ -9,6 +9,7 @@ const config = {
     googleClientId: process.env.GOOGLE_CLIENT_ID || '',
     googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
     googleCallbackUrl: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:3000/auth/google/callback',
+    googleCallbackUrlTryAgain : process.env.GOOGLE_CALLBACK_URL_TRY_AGAIN || 'http://localhost:3000/auth/google/callback',
     ownerEmail: process.env.OWNER_EMAIL || '',
     jwtSecret: process.env.JWT_SECRET || '',
     accessTokenExpiryTime: process.env.ACCESS_TOKEN_EXPIRY_TIME || '15m',

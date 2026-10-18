@@ -15,15 +15,16 @@ router.get(
   },
   passport.authenticate("google", {
     scope: ["openid", "profile", "email"],
-    session: false,
+    session: false
   }),
 );
 
 router.get(
   "/auth/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "/api/user/auth/failure",
     session: false,
+    failureRedirect: "/api/v1/user/auth/failure",
+    // failureMessage: true
   }),
   async (req: Request, res: Response, next: NextFunction) => {
     try {

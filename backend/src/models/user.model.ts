@@ -1,4 +1,3 @@
-
 import { model, Schema, type Model } from "mongoose";
 import jwt, { type SignOptions } from "jsonwebtoken";
 import config from "../config/config.js";
@@ -8,6 +7,7 @@ interface IUser {
   email: string;
   googleId?: string;
   avatar_url?: string;
+  role: "user" | "admin";
 }
 
 export interface IUserMethods {
@@ -26,6 +26,9 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
     email: {
       type: String,
       required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
     },
     googleId: {
       type: String,
@@ -33,10 +36,16 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
     avatar_url: {
       type: String,
     },
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
+      required: true,
+    },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 userSchema.methods.generateAccessToken = function () {
@@ -49,7 +58,7 @@ userSchema.methods.generateAccessToken = function () {
     config.jwtSecret,
     {
       expiresIn: config.accessTokenExpiryTime as SignOptions["expiresIn"],
-    }
+    },
   );
 };
 
@@ -61,7 +70,7 @@ userSchema.methods.generateRefreshToken = function () {
     config.jwtRefreshSecret,
     {
       expiresIn: config.refreshTokenExpiryTime as SignOptions["expiresIn"],
-    }
+    },
   );
 };
 

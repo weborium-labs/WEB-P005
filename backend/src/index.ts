@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import v1Router from "./router/api-v1.router.js";
 import { ApiResponse } from "./utils/ApiResponse.js";
 import config from "./config/config.js";
+import { connectToDatabase } from "./config/database.js";
 
 const app = express();
 
@@ -17,6 +18,12 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/v1", v1Router);
 
-app.listen(port, () => {
-  console.log("Weborium - POO5 is listening on port:", port);
-});
+connectToDatabase()
+  .then(() => {
+    app.listen(port, () => {
+      console.log("Weborium - POO5 is listening on port:", port);
+    });
+  })
+  .catch((err) => {
+    throw new Error(err);
+  });

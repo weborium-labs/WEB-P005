@@ -21,30 +21,26 @@ passport.use(
       clientSecret: config.googleClientSecret,
       callbackURL: config.googleCallbackUrl,
     },
+
     async (_accessToken, _refreshToken, profile: Profile, done) => {
       try {
-        const googleData =
-          profile._json as unknown as GoogleProfileData;
+        const googleData = profile._json as unknown as GoogleProfileData;
 
-        const email = (
-          profile.emails?.[0]?.value ?? googleData.email
-        )
+        const email = (profile.emails?.[0]?.value ?? googleData.email)
           ?.trim()
           .toLowerCase();
 
-        // Ensure Google supplied an email.
         if (!email) {
           return done(
             null,
             false,
             new OAuthError(
               "EMAIL_NOT_AVAILABLE",
-              "Email not provided by Google"
-            )
+              "Email not provided by Google",
+            ),
           );
         }
 
-        // Require a verified Google email.
         const emailVerified =
           googleData.email_verified === true ||
           googleData.verified_email === true;
@@ -55,73 +51,69 @@ passport.use(
             false,
             new OAuthError(
               "EMAIL_NOT_VERIFIED",
-              "Google email address is not verified"
-            )
+              "Google email address is not verified",
+            ),
           );
         }
 
-        // Only the configured owner may authenticate.
-        const ownerEmail = config.ownerEmail.trim().toLowerCase();
+        // First, find an account already linked to this Google ID.
+        let user = await User.findOne({ googleId: profile.id });
 
-        if (email !== ownerEmail) {
-          return done(
-            null,
-            false,
-            new OAuthError(
-              "OWNER_EMAIL_NOT_ALLOWED",
-              "This Google account is not authorized"
-            )
-          );
+        if (user) {
+          const avatarUrl = profile.photos?.[0]?.value;
+
+          if (avatarUrl && user.avatar_url !== avatarUrl) {
+            user.avatar_url = avatarUrl;
+            await user.save();
+          }
+
+          return done(null, user);
         }
 
-        // Find the existing owner account.
-        const user = await User.findOne({ email });
+        // If an account exists with this email, link the Google ID.
+        user = await User.findOne({ email });
 
-        if (!user) {
-          return done(
-            null,
-            false,
-            new OAuthError(
-              "OWNER_ACCOUNT_NOT_FOUND",
-              "The owner account has not been initialized"
-            )
-          );
+        if (user) {
+          if (user.googleId && user.googleId !== profile.id) {
+            return done(
+              null,
+              false,
+              new OAuthError(
+                "GOOGLE_ACCOUNT_ALREADY_LINKED",
+                "A different Google account is already linked",
+              ),
+            );
+          }
+
+          user.googleId = profile.id;
+
+          const avatarUrl = profile.photos?.[0]?.value;
+          if (avatarUrl) user.avatar_url = avatarUrl;
+
+          await user.save();
+
+          return done(null, user);
         }
 
-        // Never replace a Google account already linked
-        // to a different identity.
-        if (user.googleId && user.googleId !== profile.id) {
-          return done(
-            null,
-            false,
-            new OAuthError(
-              "GOOGLE_ACCOUNT_ALREADY_LINKED",
-              "A different Google account is already linked"
-            )
-          );
-        }
-
-        // Link Google to the existing owner account.
-        user.googleId = profile.id;
-
-        const avatarUrl = profile.photos?.[0]?.value;
-
-        if (avatarUrl) {
-          user.avatar_url = avatarUrl;
-        }
-
-        await user.save();
+        // No existing account: create a normal user.
+        user = await User.create({
+          display_name: profile.displayName || email.split("@")[0],
+          email,
+          googleId: profile.id,
+          avatar_url: profile.photos?.[0]?.value,
+          role: "user",
+        });
 
         return done(null, user);
       } catch (error: unknown) {
         return done(
           error instanceof Error
             ? error
-            : new Error("Google OAuth authentication failed")
+            : new Error("Google OAuth authentication failed"),
         );
       }
-    }
-  )
+    },
+  ),
 );
 
 export default passport;
