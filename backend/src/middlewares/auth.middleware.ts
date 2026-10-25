@@ -3,6 +3,14 @@ import jwt from "jsonwebtoken";
 import config from "../config/config.js";
 import { ApiError } from "../utils/ApiError.js";
 
+// 1. Define the interface here
+export interface AuthenticatedUser {
+  id?: string;
+  role?: string;
+  email?: string;
+  [key: string]: any;
+}
+
 export const verifyAdmin = (
   req: Request,
   _res: Response,
