@@ -1,28 +1,21 @@
-import mongoose, { model, Schema, Types } from "mongoose";
+// models/NavbarItem.ts
+import mongoose, { Document, model, Schema, Types } from "mongoose";
 
-interface INavItems {
-    item_name: string;
-    sub_section: Types.ObjectId;
-    user_id: Types.ObjectId;
+export interface INavItem extends Document {
+  user_id: Types.ObjectId;
+  item_name: string;
+  order: number;
+  sub_items: Types.ObjectId[];
 }
 
-const NavItemSchema = new Schema<INavItems>({
-    item_name: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    user_id:{
-        type: mongoose.Types.ObjectId,
-        ref: 'User'
-    },
-    sub_section: {
-        type: mongoose.Types.ObjectId,
-        ref: '',
-        required: true,
-    }
-})
+const NavItemSchema = new Schema<INavItem>(
+  {
+    user_id: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    item_name: { type: String, required: true, trim: true },
+    order: { type: Number, default: 0 },
+    sub_items: [{ type: Schema.Types.ObjectId, ref: "SubNavItem" }],
+  },
+  { timestamps: true }
+);
 
-const NavbarItem = model<INavItems>('NavbarItem',NavItemSchema)
-
-export default NavbarItem;
+export const NavbarItem = model<INavItem>("NavbarItem", NavItemSchema);

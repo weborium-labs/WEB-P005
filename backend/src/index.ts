@@ -5,6 +5,7 @@ import v1Router from "./router/api-v1.router.js";
 import { ApiResponse } from "./utils/ApiResponse.js";
 import config from "./config/config.js";
 import { connectToDatabase } from "./config/database.js";
+import NavRouter from "./router/nav.router.js";
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/api/v1", v1Router);
+app.use("api/v1",NavRouter)
 
 connectToDatabase()
   .then(() => {
