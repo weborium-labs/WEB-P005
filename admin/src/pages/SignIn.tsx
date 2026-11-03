@@ -139,7 +139,11 @@ const SignIn = () => {
       >
         <Stack spacing={3}>
           <Box>
-            <Typography variant="h5" fontWeight={700}>
+            <Typography
+              variant="h5"
+              component="h1"
+              sx={{ fontWeight: 700 }}
+            >
               Welcome back
             </Typography>
 

@@ -18,10 +18,7 @@ const AdminLanding = () => {
      * API call, redirect handler, or authentication service.
      */
     const handleGoogleSignIn = async (): Promise<void> => {
-        // TODO: Call your Google authentication function here.
-        // Example:
-        // await authService.signInWithGoogle();
-
+        window.location.href = `${import.meta.env.VITE_GOOGLE_REDIRECT_URL}`
         setIsSigningIn(true);
     };
 
@@ -48,12 +45,12 @@ const AdminLanding = () => {
                     borderRadius: 3,
                 }}
             >
-                <Stack spacing={3} alignItems="stretch">
+                <Stack sx={{ wordSpacing: 3, alignItems: 'stretch' }}>
                     <Box>
                         <Typography
                             variant="h5"
                             component="h1"
-                            fontWeight={700}
+                            sx={{ fontWeight: 700 }}
                         >
                             Admin Panel
                         </Typography>
