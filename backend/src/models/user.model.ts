@@ -54,6 +54,7 @@ userSchema.methods.generateAccessToken = function () {
       userId: this._id.toString(),
       display_name: this.display_name,
       email: this.email,
+      role: this.role,
     },
     config.jwtSecret,
     {

@@ -12,7 +12,7 @@ import {
 } from "../controller/navbar.controller.js";
 import { verifyAdmin } from "../middlewares/auth.middleware.js";
 
-const NavRouter = Router();
+const NavRouter: Router = Router();
 
 // ==========================================
 // 1. NAVBAR (PARENT) ROUTES

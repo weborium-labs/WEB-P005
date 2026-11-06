@@ -1,8 +1,9 @@
 import express from "express";
 import "./load-env.js";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import v1Router from "./router/api-v1.router.js";
 import { ApiResponse } from "./utils/ApiResponse.js";
+import { ApiError } from "./utils/ApiError.js";
 import config from "./config/config.js";
 import { connectToDatabase } from "./config/database.js";
 import NavRouter from "./router/nav.router.js";
@@ -14,9 +15,9 @@ const app = express();
 
 const port = config.port || 3000;
 
-const allowedOrigins = process.env.FRONTEND_URLS
-  ? process.env.FRONTEND_URLS.split(",").map((origin) => origin.trim())
-  : ["http://localhost:5173", "http://localhost:3000"];
+// Browser origins allowed by CORS; shared with the post-OAuth redirect
+// guard in user.router via config.frontendUrls.
+const allowedOrigins = config.frontendUrls;
 
 const corsOptions: CorsOptions = {
   origin: (origin, callback) => {
@@ -49,6 +50,86 @@ app.use("/api/v1", v1Router);
 app.use("/api/v1",NavRouter);
 app.use("/api/v1", PublicationRouter);
 app.use("/api/v1", GlimpseRouter);
+
+// Terminal JSON error handler: converts errors forwarded via next(err)
+// (auth middleware, Multer, Passport, body parser, CORS) into the standard
+// ApiError JSON shape instead of Express's default HTML error page.
+app.use(
+  (
+    err: unknown,
+    _req: Request,
+    res: Response,
+    next: NextFunction,
+  ): void | Response => {
+    if (res.headersSent) {
+      next(err);
+      return;
+    }
+
+    if (err instanceof ApiError) {
+      // Log name/status/message only: ApiError payloads are safe, but keep a
+      // single consistent format that can never print whole error objects.
+      console.error(`[ERROR] ${err.name}: ${err.statusCode} ${err.message}`);
+      res.status(err.statusCode).json(err);
+      return;
+    }
+
+    const error = err as
+      | {
+          name?: string;
+          code?: string;
+          type?: string;
+          message?: string;
+          statusCode?: number;
+        }
+      | undefined;
+
+    let statusCode = 500;
+    let message = "Internal Server Error";
+
+    if (error?.name === "MulterError") {
+      statusCode = error.code === "LIMIT_FILE_SIZE" ? 413 : 400;
+      message =
+        error.code === "LIMIT_FILE_SIZE"
+          ? "Upload too large: maximum file size is 10 MB."
+          : error.message || "Invalid upload request.";
+    } else if (error?.type === "entity.too.large") {
+      statusCode = 413;
+      message = "Request payload too large.";
+    } else if (
+      typeof error?.message === "string" &&
+      error.message.startsWith("Unexpected end of form")
+    ) {
+      // Busboy: the multipart stream ended before a single part completed
+      // (e.g. an empty multipart POST) — a client error, not a server error.
+      statusCode = 400;
+      message = "Malformed multipart form data.";
+    } else if (
+      typeof error?.message === "string" &&
+      error.message.startsWith("CORS Error")
+    ) {
+      statusCode = 403;
+      message = error.message;
+    } else if (
+      error?.name === "JsonWebTokenError" ||
+      error?.name === "TokenExpiredError"
+    ) {
+      statusCode = 401;
+      message = "Unauthorized: Invalid or expired token";
+    } else if (error?.name === "OAuthError") {
+      statusCode = 401;
+      message = error.message || "Authentication failed";
+    } else if (typeof error?.statusCode === "number") {
+      statusCode = error.statusCode;
+      message = error.message || message;
+    }
+
+    // Never log full error objects here: they can carry credentials or tokens.
+    console.error(`[ERROR] ${error?.name ?? "Error"}: ${message}`);
+
+    res.status(statusCode).json(new ApiError(statusCode, message));
+  },
+);
 
 connectToDatabase()
   .then(() => {

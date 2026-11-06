@@ -6,12 +6,20 @@ import { ApiError } from "../utils/ApiError.js";
 // 1. Define the interface here
 export interface AuthenticatedUser {
   id?: string;
+  userId?: string;
   role?: string;
   email?: string;
+  display_name?: string;
   [key: string]: any;
 }
 
-export const verifyAdmin = (
+/**
+ * Verifies the Bearer access token and exposes the decoded claims on
+ * `req.user`. Always maps the JWT `userId` claim to `req.user.id` so the
+ * existing controller owner-fallbacks (`req.user.id`) resolve correctly.
+ * Fails with 401 for missing/invalid/expired tokens.
+ */
+export const verifyToken = (
   req: Request,
   _res: Response,
   next: NextFunction
@@ -26,14 +34,34 @@ export const verifyAdmin = (
     const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, config.jwtSecret) as AuthenticatedUser;
 
-    (req as any).user = decoded;
-
-    if ((req as any).user.role !== "admin") {
-      return next(new ApiError(403, "Forbidden: Admin access required"));
-    }
+    (req as any).user = {
+      ...decoded,
+      id: decoded.userId ?? decoded.id,
+    };
 
     next();
   } catch (error: any) {
     return next(new ApiError(401, "Unauthorized: Invalid or expired token"));
   }
+};
+
+/**
+ * Requires a valid access token AND the `admin` role.
+ */
+export const verifyAdmin = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  verifyToken(req, res, (error?: unknown) => {
+    if (error) {
+      return next(error);
+    }
+
+    if ((req as any).user?.role !== "admin") {
+      return next(new ApiError(403, "Forbidden: Admin access required"));
+    }
+
+    next();
+  });
 };

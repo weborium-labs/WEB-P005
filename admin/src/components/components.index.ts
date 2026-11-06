@@ -1,3 +1,4 @@
 import TokenCapture from "./accessToken/TokenCapture";
+import { GuestOnly, ProtectedRoute } from "./RouteGuards";
 
-export { TokenCapture };
+export { TokenCapture, GuestOnly, ProtectedRoute };

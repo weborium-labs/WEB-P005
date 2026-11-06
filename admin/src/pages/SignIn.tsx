@@ -3,116 +3,28 @@ import {
   Alert,
   Box,
   Button,
-  Divider,
-  Link,
   Paper,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
+import { useSearchParams } from "react-router-dom";
+import { startGoogleSignIn } from "../api/auth.api";
 
-interface SignInForm {
-  email: string;
-  password: string;
-}
-
-interface FormErrors {
-  email?: string;
-  password?: string;
-}
-
-const INITIAL_FORM: SignInForm = {
-  email: "",
-  password: "",
-};
-
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-const validateForm = (form: SignInForm): FormErrors => {
-  const errors: FormErrors = {};
-  const email = form.email.trim();
-
-  if (!email) {
-    errors.email = "Email is required.";
-  } else if (!EMAIL_PATTERN.test(email)) {
-    errors.email = "Enter a valid email address.";
-  }
-
-  if (!form.password) {
-    errors.password = "Password is required.";
-  }
-
-  return errors;
-};
-
+/**
+ * Sign-in screen for the admin panel. Authentication is Google OAuth only
+ * (handled by the existing backend Passport flow) — there is no
+ * email/password authentication in this application.
+ */
 const SignIn = () => {
-  const [form, setForm] = useState<SignInForm>(INITIAL_FORM);
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formError, setFormError] = useState("");
+  const [isSigningIn, setIsSigningIn] = useState(false);
+  const [searchParams] = useSearchParams();
+  const accessDenied = searchParams.get("error") === "forbidden";
 
-  const handleChange = (field: keyof SignInForm, value: string) => {
-    setForm((previous) => ({
-      ...previous,
-      [field]: value,
-    }));
-
-    setErrors((previous) => ({
-      ...previous,
-      [field]: undefined,
-    }));
-
-    if (formError) {
-      setFormError("");
-    }
-  };
-
-  const submitSignIn = async () => {
-    const normalizedEmail = form.email.trim().toLowerCase();
-
-    const payload: SignInForm = {
-      email: normalizedEmail,
-      password: form.password,
-    };
-
-    // TODO: Replace with your authentication service.
-    // await authService.signIn(payload);
-
-    console.log(payload);
-  };
-
-  const handleSubmit = async (event: Parameters<
-    React.FormEventHandler<HTMLFormElement>
-  >[0]) => {
-    event.preventDefault();
-
-    if (isSubmitting) {
-      return;
-    }
-
-    const validationErrors = validateForm(form);
-
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
-
-    setIsSubmitting(true);
-    setFormError("");
-
-    try {
-      await submitSignIn();
-    } catch {
-      setFormError("Unable to sign in. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleGoogleSignIn = () => {
-    // TODO: Replace with your backend OAuth endpoint.
-    // window.location.assign(`${import.meta.env.VITE_API_URL}/auth/google`);
+  const handleGoogleSignIn = (): void => {
+    if (isSigningIn) return;
+    setIsSigningIn(true);
+    startGoogleSignIn();
   };
 
   return (
@@ -152,13 +64,13 @@ const SignIn = () => {
               color="text.secondary"
               sx={{ mt: 0.5 }}
             >
-              Sign in to continue to your account.
+              Sign in to continue to the administration panel.
             </Typography>
           </Box>
 
-          {formError && (
+          {accessDenied && (
             <Alert severity="error" role="alert">
-              {formError}
+              Your Google account does not have admin access to this panel.
             </Alert>
           )}
 
@@ -169,92 +81,15 @@ const SignIn = () => {
             size="large"
             startIcon={<GoogleIcon />}
             onClick={handleGoogleSignIn}
-            disabled={isSubmitting}
+            disabled={isSigningIn}
             sx={{
               minHeight: 48,
               textTransform: "none",
               fontWeight: 600,
             }}
           >
-            Continue with Google
+            {isSigningIn ? "Redirecting..." : "Continue with Google"}
           </Button>
-
-          <Divider>
-            <Typography variant="caption" color="text.secondary">
-              OR
-            </Typography>
-          </Divider>
-
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            autoComplete="on"
-          >
-            <Stack spacing={2}>
-              <TextField
-                fullWidth
-                required
-                label="Email"
-                type="email"
-                value={form.email}
-                onChange={(event) =>
-                  handleChange("email", event.target.value)
-                }
-                error={Boolean(errors.email)}
-                helperText={errors.email}
-                autoComplete="email"
-                autoFocus
-                disabled={isSubmitting}
-              />
-
-              <TextField
-                fullWidth
-                required
-                label="Password"
-                type="password"
-                value={form.password}
-                onChange={(event) =>
-                  handleChange("password", event.target.value)
-                }
-                error={Boolean(errors.password)}
-                helperText={errors.password}
-                autoComplete="current-password"
-                disabled={isSubmitting}
-              />
-
-              <Button
-                fullWidth
-                variant="contained"
-                size="large"
-                type="submit"
-                disabled={isSubmitting}
-                sx={{
-                  minHeight: 48,
-                  textTransform: "none",
-                  fontWeight: 600,
-                }}
-              >
-                {isSubmitting ? "Signing in..." : "Sign in"}
-              </Button>
-            </Stack>
-          </Box>
-
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ textAlign: "center" }}
-          >
-            Don't have an account?{" "}
-            <Link
-              href="/signup"
-              underline="none"
-              color="primary"
-              sx={{ fontWeight: 600 }}
-            >
-              Sign up
-            </Link>
-          </Typography>
         </Stack>
       </Paper>
     </Box>

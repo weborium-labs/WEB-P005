@@ -14,7 +14,9 @@ import {
 // ==========================================
 export const addGlimpses = asyncHandler(async (req: Request, res: Response) => {
   const files = req.files as Express.Multer.File[];
-  const { user_id } = req.body;
+  // A non-multipart request leaves req.body undefined (Multer only parses
+  // multipart); fall back so we can return a proper 400 instead of a 500.
+  const { user_id } = req.body ?? {};
 
   const ownerId = user_id || (req as any).user?.id;
 

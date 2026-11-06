@@ -1,5 +1,5 @@
 import multer, { FileFilterCallback } from "multer";
-import { Request } from "express";
+import { Request, RequestHandler } from "express";
 import { ApiError } from "../utils/ApiError.js";
 
 const storage = multer.memoryStorage();
@@ -16,7 +16,9 @@ const fileFilter = (
   }
 };
 
-export const uploadGlimpseImages = multer({
+// Explicit annotation keeps declaration emit portable: the inferred type of
+// multer's handler references ParamsDictionary from express-serve-static-core.
+export const uploadGlimpseImages: RequestHandler = multer({
   storage,
   fileFilter,
   limits: {

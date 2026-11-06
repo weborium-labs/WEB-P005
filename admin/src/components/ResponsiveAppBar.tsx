@@ -17,10 +17,17 @@ import MenuItem from '@mui/material/MenuItem';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { AdminPanelSettings } from '@mui/icons-material';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../store/auth.store';
+import { logoutRequest } from '../api/auth.api';
 
 const drawerWidth = 240;
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const pages = [
+    { label: 'Overview', path: '/dashboard' },
+    { label: 'Navigation', path: '/dashboard/navbars' },
+    { label: 'Publications', path: '/dashboard/publications' },
+    { label: 'Glimpses', path: '/dashboard/glimpses' },
+];
 
 interface Props {
     window?: () => Window;
@@ -31,10 +38,15 @@ function ResponsiveAppBar(props: Props) {
     const { window, children } = props;
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const navigate = useNavigate();
+    const location = useLocation();
+    const user = useAuth((state) => state.user);
+    const clearAuth = useAuth((state) => state.clearAuth);
 
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [desktopOpen, setDesktopOpen] = React.useState(true);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+    const [isSigningOut, setIsSigningOut] = React.useState(false);
 
     const handleDrawerToggle = () => {
         if (isMobile) {
@@ -50,6 +62,28 @@ function ResponsiveAppBar(props: Props) {
 
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
+    };
+
+    const handleNavigate = (path: string) => {
+        navigate(path);
+        if (isMobile) setMobileOpen(false);
+    };
+
+    const handleLogout = async () => {
+        if (isSigningOut) return;
+
+        handleCloseUserMenu();
+        if (isMobile) setMobileOpen(false);
+
+        setIsSigningOut(true);
+        try {
+            // Clears the HttpOnly refresh-token cookie on the backend.
+            await logoutRequest();
+        } finally {
+            clearAuth();
+            navigate('/', { replace: true });
+            setIsSigningOut(false);
+        }
     };
 
     const isDrawerVisible = isMobile ? mobileOpen : desktopOpen;
@@ -92,10 +126,13 @@ function ResponsiveAppBar(props: Props) {
 
             {/* Navigation Pages */}
             <List sx={{ flexGrow: 1, py: 1 }}>
-                {pages.map((text) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton onClick={() => isMobile && setMobileOpen(false)}>
-                            <ListItemText primary={<Typography>{text}</Typography>} />
+                {pages.map(({ label, path }) => (
+                    <ListItem key={path} disablePadding>
+                        <ListItemButton
+                            selected={location.pathname === path}
+                            onClick={() => handleNavigate(path)}
+                        >
+                            <ListItemText primary={<Typography>{label}</Typography>} />
                         </ListItemButton>
                     </ListItem>
                 ))}
@@ -104,14 +141,16 @@ function ResponsiveAppBar(props: Props) {
 
             {/* Profile & Settings at bottom of sidebar */}
             <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, minWidth: 0 }}>
                     <Tooltip title="Open settings">
-                        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                            <Avatar alt="Admin" src="/static/images/avatar/2.jpg" />
+                        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }} aria-label="Open settings">
+                            <Avatar alt={user?.display_name ?? 'Admin'} src={user?.avatar_url}>
+                                {(user?.display_name ?? 'A').charAt(0).toUpperCase()}
+                            </Avatar>
                         </IconButton>
                     </Tooltip>
-                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                        Admin
+                    <Typography variant="body2" sx={{ fontWeight: 600 }} noWrap>
+                        {user?.display_name ?? 'Admin'}
                     </Typography>
                 </Box>
                 <Menu
@@ -130,17 +169,14 @@ function ResponsiveAppBar(props: Props) {
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
                 >
-                    {settings.map((setting) => (
-                        <MenuItem
-                            key={setting}
-                            onClick={() => {
-                                handleCloseUserMenu();
-                                if (isMobile) setMobileOpen(false);
-                            }}
-                        >
-                            <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
-                        </MenuItem>
-                    ))}
+                    <MenuItem onClick={() => { handleCloseUserMenu(); handleNavigate('/dashboard'); }}>
+                        <Typography sx={{ textAlign: 'center' }}>Dashboard</Typography>
+                    </MenuItem>
+                    <MenuItem onClick={() => { void handleLogout(); }} disabled={isSigningOut}>
+                        <Typography sx={{ textAlign: 'center' }}>
+                            {isSigningOut ? 'Signing out…' : 'Logout'}
+                        </Typography>
+                    </MenuItem>
                 </Menu>
             </Box>
         </Box>
@@ -220,11 +256,25 @@ function ResponsiveAppBar(props: Props) {
                 component="main"
                 sx={{
                     flexGrow: 1,
+                    // Flex items default to min-width:auto, which refuses to
+                    // shrink below content min-width — a wide table would then
+                    // stretch the whole page. min-width:0 lets narrow viewports
+                    // keep the content inside the column (the table scrolls
+                    // within its own container instead).
+                    minWidth: 0,
                     p: 3,
-                    transition: theme.transitions.create(['margin', 'width'], {
-                        easing: desktopOpen ? theme.transitions.easing.easeOut : theme.transitions.easing.sharp,
-                        duration: desktopOpen ? theme.transitions.duration.enteringScreen : theme.transitions.duration.leavingScreen,
-                    }),
+                    // The floating "open sidebar" button sits fixed at the
+                    // top-left (16px, right edge ~56px) whenever the drawer is
+                    // closed; indent the content so it never overlaps the
+                    // page heading.
+                    pl: isDrawerVisible ? 3 : 8,
+                    transition: theme.transitions.create(
+                        ['margin', 'width', 'padding-left'],
+                        {
+                            easing: desktopOpen ? theme.transitions.easing.easeOut : theme.transitions.easing.sharp,
+                            duration: desktopOpen ? theme.transitions.duration.enteringScreen : theme.transitions.duration.leavingScreen,
+                        },
+                    ),
                     width: { sm: desktopOpen ? `calc(100% - ${drawerWidth}px)` : '100%' },
                 }}
             >

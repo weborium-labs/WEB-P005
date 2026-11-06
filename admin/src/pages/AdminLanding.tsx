@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {
+    Alert,
     Box,
     Button,
     Paper,
@@ -7,19 +8,21 @@ import {
     Typography,
 } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
+import { useSearchParams } from "react-router-dom";
+import { startGoogleSignIn } from "../api/auth.api";
 
 const AdminLanding = () => {
     const [isSigningIn, setIsSigningIn] = useState(false);
+    const [searchParams] = useSearchParams();
+    const accessDenied = searchParams.get("error") === "forbidden";
 
     /**
-     * Authentication entry point.
-     *
-     * Replace the implementation with your actual Google OAuth flow,
-     * API call, redirect handler, or authentication service.
+     * Authentication entry point: redirects to the existing backend
+     * Google OAuth route (`/api/v1/user/auth/google`).
      */
     const handleGoogleSignIn = async (): Promise<void> => {
-        window.location.href = `${import.meta.env.VITE_GOOGLE_REDIRECT_URL}`
         setIsSigningIn(true);
+        startGoogleSignIn();
     };
 
     return (
@@ -64,6 +67,12 @@ const AdminLanding = () => {
                             administration panel.
                         </Typography>
                     </Box>
+
+                    {accessDenied && (
+                        <Alert severity="error" role="alert">
+                            Your Google account does not have admin access to this panel.
+                        </Alert>
+                    )}
 
                     <Button
                         type="button"
