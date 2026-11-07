@@ -1,4 +1,6 @@
 import TrophyIcon from "./TrophyIcons";
+import { usePageSection } from "../hooks/usePageContent";
+import { resolveList, resolveText } from "../lib/sectionFallback";
 
 interface Milestone {
     year: string;
@@ -7,6 +9,8 @@ interface Milestone {
 }
 
 interface JourneyProps {
+    /** When set, content loads from that page document's `milestones` section. */
+    pageSlug?: string;
     heading?: string;
     milestones?: Milestone[];
     className?: string;
@@ -73,17 +77,37 @@ const Label = ({ role, institution, className = "" }: Omit<Milestone, "year"> & 
 );
 
 export const Journey = ({
+    pageSlug,
     heading = "Journey",
     milestones = defaultMilestones,
     className = "",
 }: JourneyProps) => {
+    const resolved = usePageSection(pageSlug, "milestones");
+
+    if (resolved.outcome === "hidden") return null;
+
+    const section = resolved.outcome === "section" ? resolved.section : null;
+    const title = section ? resolveText(section.heading, heading) : heading;
+
+    // CMS rows use label / title / subtitle for year / role / institution.
+    const rows = resolveList(
+        section?.items?.filter((item) => Boolean(item.title?.trim() || item.label?.trim())),
+        (list) =>
+            list.map((item) => ({
+                year: resolveText(item.label, ""),
+                role: resolveText(item.title, ""),
+                institution: resolveText(item.subtitle, ""),
+            })),
+        milestones,
+    );
+
     return (
         <section className={`w-full px-3 py-12 sm:px-6 lg:px-12 ${className}`}>
             <div className="mx-auto flex max-w-[1296px] flex-col items-center gap-10 lg:gap-16">
                 <div className="flex flex-col items-center justify-center gap-4 text-center">
                     <TrophyIcon />
                     <h2 className={`text-[28px] font-medium leading-tight text-[#131A28] sm:text-[32px] ${font}`}>
-                        {heading}
+                        {title}
                     </h2>
                 </div>
 
@@ -94,7 +118,7 @@ export const Journey = ({
                         className="absolute left-0 right-0 top-[127px] h-[2px] bg-[#131A28]"
                     />
                     <ol className="relative mx-auto grid h-full w-[96.8%] grid-cols-5">
-                        {milestones.map((m, i) => {
+                        {rows.map((m, i) => {
                             const textBelow = i % 2 === 0;
                             return (
                                 <li key={`${m.year}-${m.role}`} className="relative h-full">
@@ -125,7 +149,7 @@ export const Journey = ({
                         aria-hidden="true"
                         className="absolute bottom-2 left-[6px] top-2 w-[2px] bg-[#131A28]"
                     />
-                    {milestones.map((m) => (
+                    {rows.map((m) => (
                         <li key={`${m.year}-${m.role}`} className="relative pb-8 pl-9 last:pb-0">
                             <span
                                 aria-hidden="true"

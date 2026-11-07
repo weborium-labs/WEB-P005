@@ -224,7 +224,7 @@ export const DynamicContentPage: React.FC = () => {
         )}
       </main>
 
-      <Footer />
+      <Footer pageSlug="footer" />
     </div>
   );
 };

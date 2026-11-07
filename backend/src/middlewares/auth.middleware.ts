@@ -46,6 +46,40 @@ export const verifyToken = (
 };
 
 /**
+ * Attaches `req.user` when a *valid* Bearer token is present, but never fails.
+ *
+ * Used by public GET endpoints that serve different payloads depending on who
+ * is asking (e.g. `GET /pages/:slug` returns drafts only to admins). A missing
+ * or invalid token simply leaves the request anonymous.
+ */
+export const optionalAuth = (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+): void => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    next();
+    return;
+  }
+
+  try {
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, config.jwtSecret) as AuthenticatedUser;
+
+    (req as any).user = {
+      ...decoded,
+      id: decoded.userId ?? decoded.id,
+    };
+  } catch {
+    // Anonymous — the caller simply does not get privileged payloads.
+  }
+
+  next();
+};
+
+/**
  * Requires a valid access token AND the `admin` role.
  */
 export const verifyAdmin = (

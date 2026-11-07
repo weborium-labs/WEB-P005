@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Button from "./Button";
 import apiClient from "../api/apiClient";
+import { usePageSection } from "../hooks/usePageContent";
 
 interface NavChild {
   id?: string;
@@ -17,6 +18,11 @@ interface NavItem {
 }
 
 interface NavbarProps {
+  /**
+   * Page document that carries the `chrome` section (avatar + CTA).
+   * Defaults to the `site` settings document; pass `undefined` to opt out.
+   */
+  pageSlug?: string | null;
   avatarSrc?: string;
   avatarAlt?: string;
   activePath?: string;
@@ -79,6 +85,7 @@ const slugify = (text: string) =>
     .replace(/^-+|-+$/g, "");
 
 const Navbar = ({
+  pageSlug = "site",
   avatarSrc = "https://pub-4288b22fbd4c41f8ae1e48c844c96685.r2.dev/weborium/Dr.%20Davinder%20Paul%20Singh.jpeg",
   avatarAlt = "Profile",
   activePath = "/",
@@ -92,6 +99,15 @@ const Navbar = ({
   const [panelItem, setPanelItem] = useState<string | null>(null);
   const [panelLeft, setPanelLeft] = useState(0);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
+
+  // Site chrome (avatar + CTA) comes from the `site` page document; while the
+  // request is pending or fails the static defaults below stay in place.
+  const chromeResult = usePageSection(pageSlug ?? undefined, "chrome");
+  const chrome = chromeResult.outcome === "section" ? chromeResult.section : null;
+  const resolvedAvatar = chrome?.image?.url || avatarSrc;
+  const resolvedAvatarAlt = chrome?.image?.alt || avatarAlt;
+  const resolvedCtaLabel = chrome?.primaryButton?.label?.trim() || ctaText;
+  const resolvedCtaHref = chrome?.primaryButton?.href?.trim() || ctaHref;
 
   const navRef = useRef<HTMLElement>(null);
   const linksRef = useRef<HTMLUListElement>(null);
@@ -264,8 +280,8 @@ const Navbar = ({
           {/* Avatar */}
           <a href="/" aria-label="Home" className="shrink-0">
             <img
-              src={avatarSrc}
-              alt={avatarAlt}
+              src={resolvedAvatar}
+              alt={resolvedAvatarAlt}
               draggable={false}
               className="h-11 w-11 sm:h-[52px] sm:w-[52px] rounded-full object-cover ring-1 ring-black/10"
             />
@@ -304,7 +320,7 @@ const Navbar = ({
                 );
               })}
             </ul>
-            <Button text={ctaText} href={ctaHref} className="ml-1" />
+            <Button text={resolvedCtaLabel} href={resolvedCtaHref} className="ml-1" />
           </div>
 
           {/* Mobile toggle */}
@@ -429,7 +445,7 @@ const Navbar = ({
             );
           })}
           <li className="pt-4">
-            <Button text={ctaText} href={ctaHref} fullWidth />
+            <Button text={resolvedCtaLabel} href={resolvedCtaHref} fullWidth />
           </li>
         </ul>
       </div>

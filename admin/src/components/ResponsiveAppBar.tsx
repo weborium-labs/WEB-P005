@@ -24,9 +24,11 @@ import { logoutRequest } from '../api/auth.api';
 const drawerWidth = 240;
 const pages = [
     { label: 'Overview', path: '/dashboard' },
+    { label: 'Pages', path: '/dashboard/pages' },
     { label: 'Navigation', path: '/dashboard/navbars' },
     { label: 'Publications', path: '/dashboard/publications' },
     { label: 'Glimpses', path: '/dashboard/glimpses' },
+    { label: 'Media', path: '/dashboard/media' },
 ];
 
 interface Props {
@@ -129,7 +131,11 @@ function ResponsiveAppBar(props: Props) {
                 {pages.map(({ label, path }) => (
                     <ListItem key={path} disablePadding>
                         <ListItemButton
-                            selected={location.pathname === path}
+                            selected={
+                                path === '/dashboard'
+                                    ? location.pathname === path
+                                    : location.pathname.startsWith(path)
+                            }
                             onClick={() => handleNavigate(path)}
                         >
                             <ListItemText primary={<Typography>{label}</Typography>} />

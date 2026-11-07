@@ -6,25 +6,25 @@ import {
   Card,
   CardActions,
   CardContent,
+  Chip,
   CircularProgress,
   Stack,
   Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { getNavbars } from "../api/navbar.api";
-import { getPublications } from "../api/publication.api";
-import { getGlimpses } from "../api/glimpse.api";
+import { getOverviewStats } from "../api/stats.api";
 import { isRequestCanceled, normalizeApiError } from "../api/apiClient";
+import type { OverviewStats } from "../types/page";
 
-interface OverviewCounts {
-  navbars: number;
-  publications: number;
-  glimpses: number;
-}
-
+/**
+ * Dashboard overview.
+ *
+ * Every figure comes straight from `GET /api/v1/stats/overview`, which counts
+ * the real MongoDB collections — nothing is derived or fabricated client-side.
+ */
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [counts, setCounts] = useState<OverviewCounts | null>(null);
+  const [stats, setStats] = useState<OverviewStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,22 +32,13 @@ const Dashboard = () => {
   // when the page unmounts (the initial load is handled by the effect below).
   const retryControllerRef = useRef<AbortController | null>(null);
 
-  const loadCounts = useCallback(async (signal: AbortSignal) => {
+  const loadStats = useCallback(async (signal: AbortSignal) => {
     try {
       // No synchronous setState here: state updates happen only after the
-      // requests settle, which keeps effect execution free of cascading
+      // request settles, which keeps effect execution free of cascading
       // renders (react-hooks/set-state-in-effect).
-      const [navbars, publications, glimpses] = await Promise.all([
-        getNavbars(signal),
-        getPublications(signal),
-        getGlimpses(signal),
-      ]);
-
-      setCounts({
-        navbars: navbars.length,
-        publications: publications.length,
-        glimpses: glimpses.length,
-      });
+      const overview = await getOverviewStats(signal);
+      setStats(overview);
       setError(null);
     } catch (err) {
       if (isRequestCanceled(err)) return;
@@ -65,14 +56,14 @@ const Dashboard = () => {
     // synchronously while the effect runs (react-hooks/set-state-in-effect).
     queueMicrotask(() => {
       if (!controller.signal.aborted) {
-        void loadCounts(controller.signal);
+        void loadStats(controller.signal);
       }
     });
     return () => {
       controller.abort();
       retryControllerRef.current?.abort();
     };
-  }, [loadCounts]);
+  }, [loadStats]);
 
   const cards: {
     title: string;
@@ -81,24 +72,43 @@ const Dashboard = () => {
     description: string;
   }[] = [
     {
+      title: "Pages",
+      count: stats?.pages.total,
+      path: "/dashboard/pages",
+      description: "Document-level content: hero, sections, SEO and status.",
+    },
+    {
       title: "Navigation",
-      count: counts?.navbars,
+      count: stats ? stats.navigation.navbars + stats.navigation.subnavbars : undefined,
       path: "/dashboard/navbars",
       description: "Manage top-level menu items and nested sub-navigation.",
     },
     {
       title: "Publications",
-      count: counts?.publications,
+      count: stats?.publications,
       path: "/dashboard/publications",
       description: "Manage journal and conference publication records.",
     },
     {
       title: "Glimpses",
-      count: counts?.glimpses,
+      count: stats?.glimpses,
       path: "/dashboard/glimpses",
       description: "Upload and remove gallery images.",
     },
+    {
+      title: "Media",
+      count: stats?.media,
+      path: "/dashboard/media",
+      description: "Cloudinary-backed images used across page content.",
+    },
   ];
+
+  const statusChips = stats ? (
+    <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+      <Chip size="small" color="success" variant="outlined" label={`${stats.pages.published} published`} />
+      <Chip size="small" variant="outlined" label={`${stats.pages.draft} draft`} />
+    </Stack>
+  ) : null;
 
   return (
     <Stack spacing={3} sx={{ py: 1 }}>
@@ -109,6 +119,7 @@ const Dashboard = () => {
         <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
           Overview of your portfolio content.
         </Typography>
+        {statusChips}
       </Box>
 
       {error && (
@@ -125,7 +136,7 @@ const Dashboard = () => {
                 retryControllerRef.current = controller;
                 setLoading(true);
                 setError(null);
-                void loadCounts(controller.signal);
+                void loadStats(controller.signal);
               }}
             >
               Retry
@@ -136,7 +147,7 @@ const Dashboard = () => {
         </Alert>
       )}
 
-      {loading && !counts && !error && (
+      {loading && !stats && !error && (
         <Box sx={{ display: "grid", placeItems: "center", py: 6 }} role="status">
           <CircularProgress aria-label="Loading dashboard…" />
         </Box>
@@ -170,6 +181,61 @@ const Dashboard = () => {
           </Card>
         ))}
       </Box>
+
+      {/* Recently updated pages — real `updatedAt` values from the database. */}
+      <Card elevation={0} sx={{ border: 1, borderColor: "divider", borderRadius: 2 }}>
+        <CardContent>
+          <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+            Recently updated pages
+          </Typography>
+          {!stats || stats.recentlyUpdated.length === 0 ? (
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+              {loading ? "Loading…" : "No pages have been edited yet."}
+            </Typography>
+          ) : (
+            <Box sx={{ mt: 1, display: "grid", gap: 1 }}>
+              {stats.recentlyUpdated.map((page) => (
+                <Box
+                  key={page._id}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 2,
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <Box sx={{ minWidth: 0 }}>
+                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                      {page.title}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary" sx={{ fontFamily: "monospace" }}>
+                      /{page.slug} · v{page.version}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                    <Chip
+                      size="small"
+                      label={page.status}
+                      color={page.status === "published" ? "success" : "default"}
+                      variant={page.status === "published" ? "filled" : "outlined"}
+                    />
+                    <Typography variant="caption" color="text.secondary">
+                      {new Date(page.updatedAt).toLocaleString(undefined, {
+                        dateStyle: "medium",
+                        timeStyle: "short",
+                      })}
+                    </Typography>
+                    <Button size="small" onClick={() => navigate(`/dashboard/pages/${page.slug}`)}>
+                      Edit
+                    </Button>
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+          )}
+        </CardContent>
+      </Card>
     </Stack>
   );
 };

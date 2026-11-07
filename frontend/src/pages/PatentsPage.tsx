@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import apiClient from "../api/apiClient";
+import { usePageHeader, usePageSeo } from "../hooks/usePageContent";
 
 interface PatentItem {
   id: string;
@@ -78,7 +79,11 @@ const defaultPatents: PatentItem[] = [
   },
 ];
 
+const PAGE_SLUG = "patents";
+
 export const PatentsPage: React.FC = () => {
+  usePageSeo(PAGE_SLUG);
+  const { heading: pageHeading } = usePageHeader(PAGE_SLUG);
   const [activeTab, setActiveTab] = useState<"PUBLISHED" | "GRANTED">("PUBLISHED");
   const [patents, setPatents] = useState<PatentItem[]>(defaultPatents);
   const [loading, setLoading] = useState<boolean>(true);
@@ -195,7 +200,7 @@ export const PatentsPage: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4">
           <div>
             <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-bold text-[#111827] tracking-tight leading-tight">
-              Patents
+              {pageHeading ?? "Patents"}
             </h1>
             <p className="mt-1 text-[13px] text-[#6B7280]">
               {filteredPatents.length} {activeTab === "GRANTED" ? "Granted" : "Published"}
@@ -314,7 +319,7 @@ export const PatentsPage: React.FC = () => {
       </main>
 
       {/* 3. Footer */}
-      <Footer />
+      <Footer pageSlug="footer" />
     </div>
   );
 };

@@ -12,6 +12,7 @@ import LandingPage from "./pages/LandingPage";
 import About from "./pages/About";
 import EditorialBoardPage from "./pages/EditorialBoardPage";
 import PatentsPage from "./pages/PatentsPage";
+import ContactPage from "./pages/ContactPage";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
       <Route path="/about" element={<About />} />
       <Route path="/page/editorial-board-memberships" element={<EditorialBoardPage />} />
       <Route path="/research/patents" element={<PatentsPage />} />
+      <Route path="/contact" element={<ContactPage />} />
  
       {/* Dynamic Catch-All Route for Admin Custom Pages */}
       <Route path="/page/:slug" element={<DynamicContentPage />} />

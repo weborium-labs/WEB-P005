@@ -2,23 +2,35 @@ import { Request, Response } from "express";
 import { asyncHandler } from "../utils/async-handler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
+import { assertObjectId } from "../utils/object-id.js";
 import { NavbarItem } from "../models/navbar_item.model.js";
 import SubNavItem from "../models/sub_nav_item.model.js";
+import type { CreateNavbarsInput, CreateSubNavbarsInput, ReplaceNavbarInput, ReplaceSubNavbarInput } from "../schemas/content.schema.js";
+
+/**
+ * Ownership always comes from the verified access token. `user_id` in a request
+ * body is never trusted — a client cannot create or reassign records for
+ * another account.
+ */
+const resolveOwnerId = (req: Request): string => {
+  const ownerId = (req as Request & { user?: { id?: string } }).user?.id;
+  if (!ownerId) {
+    throw new ApiError(401, "Unable to resolve the authenticated owner.");
+  }
+  return ownerId;
+};
 
 // ==========================================
 // 1. NAVBAR ITEM CONTROLLERS (PARENT)
 // ==========================================
 
-// Create Multiple Navbar items at once (Accepts single object OR array)
+// Create multiple navbar items (validated; ownership from the token).
 export const createNavItems = asyncHandler(async (req: Request, res: Response) => {
-  const { items, user_id } = req.body;
+  const { items } = req.body as CreateNavbarsInput;
+  const ownerId = resolveOwnerId(req);
 
-  if (!Array.isArray(items) || items.length === 0) {
-    throw new ApiError(400, "Provide an array of items with at least one item.");
-  }
-
-  const payload = items.map((item: any, index: number) => ({
-    user_id: item.user_id || user_id,
+  const payload = items.map((item, index) => ({
+    user_id: ownerId,
     item_name: item.item_name,
     order: item.order ?? index,
     sub_items: [],
@@ -31,10 +43,9 @@ export const createNavItems = asyncHandler(async (req: Request, res: Response) =
     .json(new ApiResponse(201, createdItems, "Navbar items created successfully."));
 });
 
-// Get All Navbar items (along with all nested SubNavbar items)
-
+// Get all navbar items along with their nested sub-items.
 export const getAllNavbars = asyncHandler(async (req: Request, res: Response) => {
-  const { user_id } = req.query;
+  const { user_id } = req.query as { user_id?: string };
   const filter = user_id ? { user_id: String(user_id) } : {};
 
   const navbars = await NavbarItem.find(filter)
@@ -42,17 +53,18 @@ export const getAllNavbars = asyncHandler(async (req: Request, res: Response) =>
     .populate({
       path: "sub_items",
       options: { sort: { order: 1 } },
-    });
+    })
+    .lean();
 
   return res
     .status(200)
     .json(new ApiResponse(200, navbars, "Navbar items retrieved successfully."));
 });
 
-// Update Navbar Item name and/or order
+// Replace the editable fields of a navbar item (whitelisted by the schema).
 export const updateNavbar = asyncHandler(async (req: Request, res: Response) => {
-  const { navbar_id } = req.params;
-  const { item_name, order } = req.body;
+  const navbar_id = assertObjectId(req.params.navbar_id, "Navbar item not found.");
+  const { item_name, order } = req.body as ReplaceNavbarInput;
 
   const updatedNavbar = await NavbarItem.findByIdAndUpdate(
     navbar_id,
@@ -69,16 +81,15 @@ export const updateNavbar = asyncHandler(async (req: Request, res: Response) => 
     .json(new ApiResponse(200, updatedNavbar, "Navbar item updated successfully."));
 });
 
-// Delete a Navbar item and cascade-delete all its child SubNavbar items
+// Delete a navbar item and cascade-delete all its child sub-items.
 export const deleteNavbar = asyncHandler(async (req: Request, res: Response) => {
-  const { navbar_id } = req.params;
+  const navbar_id = assertObjectId(req.params.navbar_id, "Navbar item not found.");
 
   const navItem = await NavbarItem.findByIdAndDelete(navbar_id);
   if (!navItem) {
     throw new ApiError(404, "Navbar item not found.");
   }
 
-  // Cascade delete all attached sub-items
   await SubNavItem.deleteMany({ parent_item: navbar_id });
 
   return res
@@ -90,32 +101,28 @@ export const deleteNavbar = asyncHandler(async (req: Request, res: Response) => 
 // 2. SUB-NAVBAR ITEM CONTROLLERS (CHILD)
 // ==========================================
 
-// Add SubNavbar item(s) to a specific Navbar (Supports adding one or multiple)
+// Add sub-navbar item(s) to a specific navbar.
 export const addSubNavItems = asyncHandler(async (req: Request, res: Response) => {
-  const { navbar_id } = req.params;
-  const { sub_items } = req.body;
+  const navbar_id = assertObjectId(req.params.navbar_id, "Parent Navbar item not found.");
+  const { sub_items } = req.body as CreateSubNavbarsInput;
 
   const parentNav = await NavbarItem.findById(navbar_id);
   if (!parentNav) {
     throw new ApiError(404, "Parent Navbar item not found.");
   }
 
-  // Standardize input to an array (supports single object or array)
-  const itemsList = Array.isArray(sub_items) ? sub_items : [sub_items];
-
-  const preparedSubItems = itemsList.map((item: any, index: number) => ({
+  const preparedSubItems = sub_items.map((item, index) => ({
     parent_item: parentNav._id,
     item_name: item.item_name,
-    page_content: item.page_content || "",
-    item_type: item.item_type || "navItem",
+    page_content: item.page_content ?? "",
+    item_type: item.item_type ?? "navItem",
     order: item.order ?? index,
   }));
 
   const createdSubItems = await SubNavItem.insertMany(preparedSubItems);
 
-  // Push new sub-item IDs into parent's sub_items array
   const createdIds = createdSubItems.map((item) => item._id);
-  parentNav.sub_items.push(...(createdIds as any));
+  parentNav.sub_items.push(...(createdIds as never[]));
   await parentNav.save();
 
   return res
@@ -123,21 +130,21 @@ export const addSubNavItems = asyncHandler(async (req: Request, res: Response) =
     .json(new ApiResponse(201, createdSubItems, "Sub-navbar items added successfully."));
 });
 
-// Get all SubNavbar items for a specific Navbar
+// Get all sub-navbar items for a specific navbar.
 export const getSubNavbarsByNavbar = asyncHandler(async (req: Request, res: Response) => {
-  const { navbar_id } = req.params;
+  const navbar_id = assertObjectId(req.params.navbar_id, "Navbar item not found.");
 
-  const subItems = await SubNavItem.find({ parent_item: navbar_id }).sort({ order: 1 });
+  const subItems = await SubNavItem.find({ parent_item: navbar_id }).sort({ order: 1 }).lean();
 
   return res
     .status(200)
     .json(new ApiResponse(200, subItems, "Sub-navbar items retrieved successfully."));
 });
 
-// Update SubNavbar item (name, content, type, order)
+// Replace the editable fields of a sub-navbar item (whitelisted by the schema).
 export const updateSubNavbar = asyncHandler(async (req: Request, res: Response) => {
-  const { subnav_id } = req.params;
-  const { item_name, page_content, item_type, order } = req.body;
+  const subnav_id = assertObjectId(req.params.subnav_id, "SubNavbar item not found.");
+  const { item_name, page_content, item_type, order } = req.body as ReplaceSubNavbarInput;
 
   const updatedSub = await SubNavItem.findByIdAndUpdate(
     subnav_id,
@@ -154,16 +161,15 @@ export const updateSubNavbar = asyncHandler(async (req: Request, res: Response) 
     .json(new ApiResponse(200, updatedSub, "SubNavbar item updated successfully."));
 });
 
-// Delete a single SubNavbar item and remove its ID from the parent
+// Delete a single sub-navbar item and remove its ID from the parent.
 export const deleteSubNavbar = asyncHandler(async (req: Request, res: Response) => {
-  const { subnav_id } = req.params;
+  const subnav_id = assertObjectId(req.params.subnav_id, "SubNavbar item not found.");
 
   const subItem = await SubNavItem.findByIdAndDelete(subnav_id);
   if (!subItem) {
     throw new ApiError(404, "SubNavbar item not found.");
   }
 
-  // Pull sub-item reference from parent Navbar
   await NavbarItem.findByIdAndUpdate(subItem.parent_item, {
     $pull: { sub_items: subItem._id },
   });

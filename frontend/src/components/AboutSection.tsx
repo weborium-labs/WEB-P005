@@ -1,5 +1,6 @@
 import Button from "./Button";
 import { ChevronRightIcon } from "./Icons";
+import { usePageSection } from "../hooks/usePageContent";
 
 interface Stat {
     value: string;
@@ -7,6 +8,8 @@ interface Stat {
 }
 
 interface AboutSectionProps {
+    /** When set, content loads from that page document's `about` section. */
+    pageSlug?: string;
     heading?: string;
     stats?: Stat[];
     description?: string;
@@ -48,6 +51,7 @@ const StatCard = ({ value, label }: Stat) => (
 );
 
 export const AboutSection = ({
+    pageSlug,
     heading = "Research with rigour, teaching with purpose",
     stats = defaultStats,
     description = defaultDescription,
@@ -56,6 +60,26 @@ export const AboutSection = ({
     latestItems = defaultLatest,
     className = "",
 }: AboutSectionProps) => {
+    const resolved = usePageSection(pageSlug, "about");
+
+    // Admin removed or hid this block — render nothing rather than stale copy.
+    if (resolved.outcome === "hidden") return null;
+
+    const section = resolved.outcome === "section" ? resolved.section : null;
+
+    const title = section?.heading?.trim() || heading;
+    const bio = section?.description?.trim() || description;
+    const link = section?.cta ?? cta;
+    const latestHeading = section?.subtitle?.trim() || latestTitle;
+    // `stats` present (even empty) in the API payload wins over the defaults;
+    // an absent field keeps the static fallback.
+    const statCards: Stat[] = section?.stats ?? stats;
+    const latest: string[] = section?.items
+        ? section.items
+              .map((item) => item.title?.trim() || item.description?.trim() || "")
+              .filter(Boolean)
+        : latestItems;
+
     return (
         <section className={`w-full px-3 py-12 sm:px-6 lg:px-12 ${className}`}>
             <div className="mx-auto max-w-7xl">
@@ -66,11 +90,11 @@ export const AboutSection = ({
                     {/* Left: heading + stats */}
                     <div className="flex flex-col items-start gap-6">
                         <h2 className="max-w-[332px] font-['Google_Sans_Flex',sans-serif] text-[28px] font-medium leading-tight text-[#131A28] sm:text-[32px]">
-                            {heading}
+                            {title}
                         </h2>
                         <div className="flex flex-wrap gap-x-4 gap-y-3">
-                            {stats.map((s) => (
-                                <StatCard key={s.label} {...s} />
+                            {statCards.map((s) => (
+                                <StatCard key={`${s.value}-${s.label}`} {...s} />
                             ))}
                         </div>
                     </div>
@@ -78,12 +102,12 @@ export const AboutSection = ({
                     {/* Right: bio + CTA */}
                     <div className="flex flex-col items-start gap-6">
                         <p className="w-full text-justify font-['Google_Sans_Flex',sans-serif] text-base leading-tight text-[#5B6478] sm:text-xl">
-                            {description}
+                            {bio}
                         </p>
                         <Button
                             variant="soft"
-                            text={cta.label}
-                            href={cta.href}
+                            text={link.label}
+                            href={link.href}
                             icon={<ChevronRightIcon />}
                         />
                     </div>
@@ -96,10 +120,10 @@ export const AboutSection = ({
                     className="relative z-0 mx-9 -mt-12 rounded-b-[36px] rounded-t-none bg-[#FAFAFA] bg-[linear-gradient(90deg,rgba(255,255,255,0.02)_0%,rgba(0,0,0,0.02)_47.08%,rgba(255,255,255,0.02)_100%)] px-6 pb-8 pt-[72px] text-center shadow-[inset_4px_0_4px_0_rgba(255,255,255,0.25),2px_2px_120px_0_rgba(0,0,0,0.12)] sm:mx-12 sm:rounded-b-[48px] lg:mx-[72px] lg:rounded-b-[64px]"
                 >
                     <h3 className="font-['Google_Sans_Flex',sans-serif] text-[28px] font-medium leading-tight text-[#131A28] sm:text-[32px]">
-                        {latestTitle}
+                        {latestHeading}
                     </h3>
                     <ul className="mt-3 flex flex-col gap-4">
-                        {latestItems.map((item) => (
+                        {latest.map((item) => (
                             <li
                                 key={item}
                                 className="font-['Google_Sans_Flex',sans-serif] text-base leading-tight text-[#5B6478] sm:text-xl"

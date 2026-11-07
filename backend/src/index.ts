@@ -9,6 +9,9 @@ import { connectToDatabase } from "./config/database.js";
 import NavRouter from "./router/nav.router.js";
 import PublicationRouter from "./router/publication.routes.js";
 import GlimpseRouter from "./router/glimpse.routes.js";
+import PageRouter from "./router/page.routes.js";
+import MediaRouter from "./router/media.routes.js";
+import StatsRouter from "./router/stats.routes.js";
 import helmet from "helmet";
 import cors, { CorsOptions } from "cors";
 const app = express();
@@ -37,8 +40,10 @@ const corsOptions: CorsOptions = {
 
 app.use(cors(corsOptions));
 app.use(helmet());
-app.use(express.json({ limit: "16kb" }));
-app.use(express.urlencoded({ extended: true, limit: "16kb" }));
+// 1 MB: page documents carry the complete editable content of a page (hero
+// copy, section arrays, SEO), which routinely exceeds a 16 KB ceiling.
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: true, limit: "1mb" }));
 
 app.get("/", (req: Request, res: Response) => {
   res
@@ -50,6 +55,9 @@ app.use("/api/v1", v1Router);
 app.use("/api/v1",NavRouter);
 app.use("/api/v1", PublicationRouter);
 app.use("/api/v1", GlimpseRouter);
+app.use("/api/v1", PageRouter);
+app.use("/api/v1", MediaRouter);
+app.use("/api/v1", StatsRouter);
 
 // Terminal JSON error handler: converts errors forwarded via next(err)
 // (auth middleware, Multer, Passport, body parser, CORS) into the standard
@@ -77,7 +85,8 @@ app.use(
     const error = err as
       | {
           name?: string;
-          code?: string;
+          code?: string | number;
+          kind?: string;
           type?: string;
           message?: string;
           statusCode?: number;
@@ -116,6 +125,14 @@ app.use(
     ) {
       statusCode = 401;
       message = "Unauthorized: Invalid or expired token";
+    } else if (error?.name === "CastError" && error?.kind === "ObjectId") {
+      // A malformed ObjectId in a route/query parameter is a missing resource,
+      // not a server fault — without this it escapes as an unhandled 500.
+      statusCode = 404;
+      message = "Resource not found.";
+    } else if (error?.name === "MongoServerError" && error?.code === 11000) {
+      statusCode = 409;
+      message = "A record with that unique value already exists.";
     } else if (error?.name === "OAuthError") {
       statusCode = 401;
       message = error.message || "Authentication failed";

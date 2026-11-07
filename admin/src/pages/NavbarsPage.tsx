@@ -37,6 +37,7 @@ import {
 } from "../api/navbar.api";
 import { isRequestCanceled, normalizeApiError } from "../api/apiClient";
 import { useAuth } from "../store/auth.store";
+import { SUB_ITEM_TYPES, SUB_ITEM_TYPE_LABELS, type SubItemType } from "../types/subnav";
 
 type Feedback = { severity: "success" | "error"; message: string } | null;
 
@@ -63,7 +64,7 @@ interface SubFormState {
   subnavId: string | null;
   item_name: string;
   page_content: string;
-  item_type: "navItem" | "gallery";
+  item_type: SubItemType;
   order: string;
 }
 
@@ -74,7 +75,7 @@ const EMPTY_SUB_FORM: SubFormState = {
   subnavId: null,
   item_name: "",
   page_content: "",
-  item_type: "navItem",
+  item_type: "navItem" as SubItemType,
   order: "0",
 };
 
@@ -511,14 +512,17 @@ const NavbarsPage = () => {
               onChange={(e) =>
                 setSubForm((f) => ({
                   ...f,
-                  item_type: e.target.value as "navItem" | "gallery",
+                  item_type: e.target.value as SubItemType,
                 }))
               }
               fullWidth
               disabled={busy}
             >
-              <MenuItem value="navItem">navItem</MenuItem>
-              <MenuItem value="gallery">gallery</MenuItem>
+              {SUB_ITEM_TYPES.map((type) => (
+                <MenuItem key={type} value={type}>
+                  {SUB_ITEM_TYPE_LABELS[type]}
+                </MenuItem>
+              ))}
             </TextField>
             <TextField
               label="Order"

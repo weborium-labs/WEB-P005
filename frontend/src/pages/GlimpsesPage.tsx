@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import apiClient from "../api/apiClient";
+import { usePageHeader, usePageSeo } from "../hooks/usePageContent";
 
 interface GlimpseItem {
   _id: string;
@@ -14,7 +15,11 @@ interface GlimpseItem {
 
 const ITEMS_PER_PAGE = 11;
 
+const PAGE_SLUG = "glimpses";
+
 export const GlimpsesPage: React.FC = () => {
+  usePageSeo(PAGE_SLUG);
+  const { heading: pageHeading } = usePageHeader(PAGE_SLUG);
   const [glimpses, setGlimpses] = useState<GlimpseItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -112,7 +117,7 @@ export const GlimpsesPage: React.FC = () => {
         {/* Title Header */}
         <div className="pb-8 sm:pb-10">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-[#111827] tracking-tight leading-none">
-            Glimpses
+            {pageHeading ?? "Glimpses"}
           </h1>
           <p className="mt-2 text-sm text-[#6B7280] font-normal">
             Moments, academic sessions, and campus interactions ({totalItems} Photos)
@@ -322,7 +327,7 @@ export const GlimpsesPage: React.FC = () => {
       )}
 
       {/* Footer */}
-      <Footer />
+      <Footer pageSlug="footer" />
     </div>
   );
 };

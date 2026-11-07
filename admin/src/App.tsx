@@ -1,14 +1,25 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
+import { Box, CircularProgress } from "@mui/material";
 import ResponsiveAppBar from "./components/ResponsiveAppBar"
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom"
-import {
-  SignIn,
-  AdminLanding,
-  Dashboard,
-  NavbarsPage,
-  PublicationsPage,
-  GlimpsesPage,
-} from "./pages/page.index"
+import SignIn from "./pages/SignIn"
+import AdminLanding from "./pages/AdminLanding"
+
+// Dashboard screens are code-split so the sign-in/landing bundle stays small;
+// each screen loads on first navigation.
+const Dashboard = lazy(() => import("./pages/page.index").then((m) => ({ default: m.Dashboard })));
+const NavbarsPage = lazy(() => import("./pages/page.index").then((m) => ({ default: m.NavbarsPage })));
+const PublicationsPage = lazy(() => import("./pages/page.index").then((m) => ({ default: m.PublicationsPage })));
+const GlimpsesPage = lazy(() => import("./pages/page.index").then((m) => ({ default: m.GlimpsesPage })));
+const PagesPage = lazy(() => import("./pages/page.index").then((m) => ({ default: m.PagesPage })));
+const PageEditorPage = lazy(() => import("./pages/page.index").then((m) => ({ default: m.PageEditorPage })));
+const MediaPage = lazy(() => import("./pages/page.index").then((m) => ({ default: m.MediaPage })));
+
+const RouteFallback = () => (
+  <Box sx={{ display: "grid", placeItems: "center", py: 10 }} role="status">
+    <CircularProgress aria-label="Loading…" />
+  </Box>
+);
 import { TokenCapture } from "./components/components.index"
 import { GuestOnly, ProtectedRoute } from "./components/RouteGuards"
 import { initializeAuth } from "./api/auth.api"
@@ -16,7 +27,9 @@ import { initializeAuth } from "./api/auth.api"
 // Wraps the dashboard routes in the admin shell (sidebar + avatar menu).
 const DashboardLayout = () => (
   <ResponsiveAppBar>
-    <Outlet />
+    <Suspense fallback={<RouteFallback />}>
+      <Outlet />
+    </Suspense>
   </ResponsiveAppBar>
 );
 
@@ -42,6 +55,9 @@ const App = () => {
               <Route path="/dashboard/navbars" element={<NavbarsPage />} />
               <Route path="/dashboard/publications" element={<PublicationsPage />} />
               <Route path="/dashboard/glimpses" element={<GlimpsesPage />} />
+              <Route path="/dashboard/pages" element={<PagesPage />} />
+              <Route path="/dashboard/pages/:slug" element={<PageEditorPage />} />
+              <Route path="/dashboard/media" element={<MediaPage />} />
             </Route>
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />

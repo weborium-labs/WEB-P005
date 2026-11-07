@@ -8,6 +8,8 @@
     "build": "rm -rf dist && tsc",
     "dev": "npm run build && concurrently -k \"tsc --watch\" \"nodemon --watch dist dist/index.js\"",
     "start": "node dist/index.js",
+    "seed": "node dist/scripts/seed-pages.js",
+    "typecheck": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

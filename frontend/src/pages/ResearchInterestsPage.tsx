@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import apiClient from "../api/apiClient";
+import { usePageHeader, usePageSeo } from "../hooks/usePageContent";
 
 // ==========================================
 // 1. EXACT SVG ICONS (64x64 PX PRESERVED)
@@ -164,7 +165,11 @@ const defaultInterests: InterestItem[] = [
   },
 ];
 
+const PAGE_SLUG = "research-interests";
+
 export const ResearchInterestsPage: React.FC = () => {
+  usePageSeo(PAGE_SLUG);
+  const { heading: pageHeading } = usePageHeader(PAGE_SLUG);
   const [interests, setInterests] = useState<InterestItem[]>(defaultInterests);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -271,7 +276,7 @@ export const ResearchInterestsPage: React.FC = () => {
         {/* Title */}
         <div className="pb-8 sm:pb-12 text-left">
           <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-bold text-[#111827] tracking-tight leading-tight">
-            Research Interests
+            {pageHeading ?? "Research Interests"}
           </h1>
         </div>
 
@@ -322,7 +327,7 @@ export const ResearchInterestsPage: React.FC = () => {
       </main>
 
       {/* 3. Footer */}
-      <Footer />
+      <Footer pageSlug="footer" />
     </div>
   );
 };

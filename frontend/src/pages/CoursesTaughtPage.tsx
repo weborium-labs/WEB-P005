@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import apiClient from "../api/apiClient";
+import { usePageHeader, usePageSeo } from "../hooks/usePageContent";
 
 interface CourseItem {
   id: string;
@@ -43,7 +44,11 @@ const defaultCourses: CourseItem[] = [
   },
 ];
 
+const PAGE_SLUG = "courses-taught";
+
 export const CoursesTaughtPage: React.FC = () => {
+  usePageSeo(PAGE_SLUG);
+  const { heading: pageHeading } = usePageHeader(PAGE_SLUG);
   const [courses, setCourses] = useState<CourseItem[]>(defaultCourses);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -141,7 +146,7 @@ export const CoursesTaughtPage: React.FC = () => {
         {/* Page Title */}
         <div className="pb-8 sm:pb-12">
           <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-bold text-[#111827] tracking-tight leading-tight">
-            Courses Taught
+            {pageHeading ?? "Courses Taught"}
           </h1>
         </div>
 
@@ -184,7 +189,7 @@ export const CoursesTaughtPage: React.FC = () => {
       </main>
 
       {/* 3. Footer */}
-      <Footer />
+      <Footer pageSlug="footer" />
     </div>
   );
 };

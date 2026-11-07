@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import apiClient from "../api/apiClient";
+import { usePageHeader, usePageSeo } from "../hooks/usePageContent";
 
 interface PublicationItem {
   _id: string;
@@ -15,14 +16,16 @@ interface PublicationItem {
   order: number;
 }
 
+const PAGE_SLUG = "publications";
+
 export const PublicationsPage: React.FC = () => {
+  usePageSeo(PAGE_SLUG);
+  const { heading: pageHeading } = usePageHeader(PAGE_SLUG);
   const [activeTab, setActiveTab] = useState<"journal" | "conference">("journal");
   const [publications, setPublications] = useState<PublicationItem[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
-  const USER_ID = "6ad46120cd27224b927ea8bc";
 
   useEffect(() => {
     const fetchPublications = async () => {
@@ -30,9 +33,10 @@ export const PublicationsPage: React.FC = () => {
         setLoading(true);
         setError(null);
 
+        // No `user_id` filter: the public catalogue lists every published
+        // record the admin manages (the API treats `user_id` as optional).
         const response = await apiClient.get("/publications", {
           params: {
-            user_id: USER_ID,
             type: activeTab,
           },
         });
@@ -68,7 +72,7 @@ export const PublicationsPage: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-8 sm:pb-10">
           <div>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-[#111827] tracking-tight leading-none">
-              Publications
+              {pageHeading ?? "Publications"}
             </h1>
             <p className="mt-2 text-sm text-[#6B7280] font-normal">
               {totalCount} {activeTab === "journal" ? "Journal Papers" : "Conference Papers"}
@@ -186,7 +190,7 @@ export const PublicationsPage: React.FC = () => {
       </main>
 
       {/* 4. Footer */}
-      <Footer />
+      <Footer pageSlug="footer" />
     </div>
   );
 };

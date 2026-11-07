@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { usePageSection } from "../hooks/usePageContent";
+import { resolveText } from "../lib/sectionFallback";
 
 interface FooterLink {
   label: string;
@@ -12,48 +14,100 @@ interface FooterSection {
   links: FooterLink[];
 }
 
-export const Footer: React.FC = () => {
-  const sections: FooterSection[] = [
-    {
-      title: "Pages",
-      links: [
-        { label: "Home", href: "/" },
-        { label: "About", href: "/about" },
-        { label: "Mentorship", href: "/mentorship" },
-      ],
-    },
-    {
-      title: "Research",
-      links: [
-        { label: "Research Interests", href: "/research-interests" },
-        { label: "Publications", href: "/publications" },
-        { label: "Patents", href: "/patents" },
-        { label: "Editorial & Review Services", href: "/editorial-services" },
-      ],
-    },
-    {
-      title: "Teaching",
-      links: [
-        { label: "Courses Taught", href: "/courses" },
-        { label: "Glimpses", href: "/glimpses" },
-      ],
-    },
-    {
-      title: "Connect",
-      links: [
-        {
-          label: "Google Scholar",
-          href: "https://scholar.google.com",
-          isExternal: true,
-        },
-        {
-          label: "LinkedIn",
-          href: "https://www.linkedin.com",
-          isExternal: true,
-        },
-      ],
-    },
-  ];
+interface FooterProps {
+  /** Loads the footer from the `footer` page document when provided. */
+  pageSlug?: string;
+}
+
+const DEFAULT_SECTIONS: FooterSection[] = [
+  {
+    title: "Pages",
+    links: [
+      { label: "Home", href: "/" },
+      { label: "About", href: "/about" },
+      { label: "Mentorship", href: "/mentorship" },
+    ],
+  },
+  {
+    title: "Research",
+    links: [
+      { label: "Research Interests", href: "/research-interests" },
+      { label: "Publications", href: "/publications" },
+      { label: "Patents", href: "/patents" },
+      { label: "Editorial & Review Services", href: "/editorial-services" },
+    ],
+  },
+  {
+    title: "Teaching",
+    links: [
+      { label: "Courses Taught", href: "/courses" },
+      { label: "Glimpses", href: "/glimpses" },
+    ],
+  },
+  {
+    title: "Connect",
+    links: [
+      {
+        label: "Google Scholar",
+        href: "https://scholar.google.com",
+        isExternal: true,
+      },
+      {
+        label: "LinkedIn",
+        href: "https://www.linkedin.com",
+        isExternal: true,
+      },
+    ],
+  },
+];
+
+const DEFAULT_NAME = "Dr. Davinder Paul Singh";
+const DEFAULT_ROLE =
+  "Assistant Professor, Department of Computer Science & Engineering - PDEU, Gandhinagar, Gujarat";
+const DEFAULT_UPDATED = "Last Updated - October 2026";
+const DEFAULT_COPYRIGHT = "Dr. Davinder Paul Singh © 2026";
+
+/** Internal path, hash or absolute URL — anything else keeps the static link. */
+const safeHref = (value: unknown, fallback: string): string => {
+  if (typeof value !== "string") return fallback;
+  const trimmed = value.trim();
+  if (trimmed.startsWith("/") && !trimmed.startsWith("//")) return trimmed;
+  if (trimmed.startsWith("#")) return trimmed;
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return fallback;
+};
+
+export const Footer: React.FC<FooterProps> = ({ pageSlug }) => {
+  const resolved = usePageSection(pageSlug, "footer");
+
+  // Admin hid the footer block entirely: nothing renders (their intent).
+  if (resolved.outcome === "hidden") return null;
+
+  const section = resolved.outcome === "section" ? resolved.section : null;
+
+  const name = section ? resolveText(section.heading, DEFAULT_NAME) : DEFAULT_NAME;
+  const role = section ? resolveText(section.description, DEFAULT_ROLE) : DEFAULT_ROLE;
+  const updated = section ? resolveText(section.body, DEFAULT_UPDATED) : DEFAULT_UPDATED;
+  const copyright = section ? resolveText(section.subtitle, DEFAULT_COPYRIGHT) : DEFAULT_COPYRIGHT;
+
+  // `items` present in the API payload replaces the static columns; an
+  // intentionally empty array renders no link columns at all.
+  const sections: FooterSection[] = section?.items
+    ? section.items
+        .filter((column) => Boolean(column.label))
+        .map((column) => ({
+          title: column.label as string,
+          links: (column.children ?? [])
+            .filter((link) => Boolean(link.label) && Boolean(link.href))
+            .map((link) => ({
+              label: link.label as string,
+              href: safeHref(link.href, "/"),
+              isExternal:
+                link.external === true ||
+                /^https?:\/\//i.test((link.href ?? "").trim()),
+            })),
+        }))
+    : DEFAULT_SECTIONS;
 
   return (
     <footer className="w-full px-3 py-6 sm:px-6 lg:px-12 bg-transparent select-none">
@@ -66,11 +120,10 @@ export const Footer: React.FC = () => {
           {/* Left: Bio & Heading */}
           <div className="max-w-md group">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight leading-tight transition-colors duration-200 group-hover:text-black">
-              Dr. Davinder Paul Singh
+              {name}
             </h2>
             <p className="mt-2.5 text-xs sm:text-sm text-[#4B5563] leading-relaxed font-normal">
-              Assistant Professor, Department of Computer Science &amp;
-              Engineering - PDEU, Gandhinagar, Gujarat
+              {role}
             </p>
           </div>
 
@@ -132,10 +185,10 @@ export const Footer: React.FC = () => {
         {/* Bottom Bar / Copyright */}
         <div className="mt-4 flex flex-row items-center justify-between text-[11px] sm:text-xs text-[#6B7280]">
           <span className="transition-colors duration-150 hover:text-gray-900">
-            Last Updated - October 2026
+            {updated}
           </span>
           <span className="transition-colors duration-150 hover:text-gray-900">
-            Dr. Davinder Paul Singh &copy; 2026
+            {copyright}
           </span>
         </div>
 

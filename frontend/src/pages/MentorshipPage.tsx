@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import apiClient from "../api/apiClient";
+import { usePageHeader, usePageSeo } from "../hooks/usePageContent";
 
 interface MentorshipItem {
   id: string;
@@ -81,7 +82,16 @@ const defaultMentorshipData: MentorshipItem[] = [
   },
 ];
 
+const PAGE_SLUG = "mentorship";
+
 export const MentorshipPage: React.FC = () => {
+  usePageSeo(PAGE_SLUG);
+  const { heading: pageHeading, description: pageDescription, stats: pageStats } =
+    usePageHeader(PAGE_SLUG);
+  // `undefined` = no API answer yet (keep the static badge); `[]` = the admin
+  // cleared the stat block, so nothing renders.
+  const mentorStat =
+    pageStats === undefined ? { value: "10+", label: "Students Mentored" } : pageStats[0];
   const [mentorshipList, setMentorshipList] = useState<MentorshipItem[]>(defaultMentorshipData);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -190,25 +200,28 @@ export const MentorshipPage: React.FC = () => {
         {/* Title Header */}
         <div className="pb-6 sm:pb-8">
           <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-bold text-[#111827] tracking-tight leading-tight">
-            Mentorship
+            {pageHeading ?? "Mentorship"}
           </h1>
         </div>
 
         {/* Counter Badge & Intro Section */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 pb-10 sm:pb-12 border-b border-[#F0F2F5]">
           {/* 10+ Students Mentored Rounded Card */}
-          <div className="flex flex-col items-center justify-center bg-[#F9FAFB] border border-[#E5E7EB] rounded-[24px] sm:rounded-[28px] px-6 py-4 min-w-[140px] w-fit shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
-            <span className="text-2xl sm:text-3xl font-extrabold text-[#111827] leading-none">
-              10+
-            </span>
-            <span className="text-[12px] sm:text-[13px] font-medium text-[#6B7280] mt-1 text-center whitespace-nowrap">
-              Students Mentored
-            </span>
-          </div>
+          {mentorStat && (
+            <div className="flex flex-col items-center justify-center bg-[#F9FAFB] border border-[#E5E7EB] rounded-[24px] sm:rounded-[28px] px-6 py-4 min-w-[140px] w-fit shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
+              <span className="text-2xl sm:text-3xl font-extrabold text-[#111827] leading-none">
+                {mentorStat.value}
+              </span>
+              <span className="text-[12px] sm:text-[13px] font-medium text-[#6B7280] mt-1 text-center whitespace-nowrap">
+                {mentorStat.label}
+              </span>
+            </div>
+          )}
 
           {/* Subtext description */}
           <p className="text-xs sm:text-[13.5px] text-[#6B7280] leading-relaxed max-w-2xl">
-            I have guided students and early-career researchers across numerous research publications, projects, and academic outcomes. A dedicated directory of supervised students and projects will be listed here once finalized.
+            {pageDescription ??
+              "I have guided students and early-career researchers across numerous research publications, projects, and academic outcomes. A dedicated directory of supervised students and projects will be listed here once finalized."}
           </p>
         </div>
 
@@ -299,7 +312,7 @@ export const MentorshipPage: React.FC = () => {
       </main>
 
       {/* 3. Footer */}
-      <Footer />
+      <Footer pageSlug="footer" />
     </div>
   );
 };

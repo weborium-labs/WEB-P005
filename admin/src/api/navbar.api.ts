@@ -1,11 +1,12 @@
 import apiClient from "./apiClient";
+import type { SubItemType } from "../types/subnav";
 
 export interface SubNavItem {
   _id: string;
   parent_item: string;
   item_name: string;
   page_content: string;
-  item_type: "navItem" | "gallery";
+  item_type: SubItemType;
   order: number;
 }
 
@@ -73,7 +74,7 @@ export interface CreateSubNavItemPayload {
   sub_items: {
     item_name: string;
     page_content: string;
-    item_type: "navItem" | "gallery";
+    item_type: SubItemType;
     order?: number;
   }[];
 }
@@ -92,7 +93,7 @@ export const createSubNavItems = async (
 export interface UpdateSubNavItemPayload {
   item_name: string;
   page_content: string;
-  item_type: "navItem" | "gallery";
+  item_type: SubItemType;
   order: number;
 }
 

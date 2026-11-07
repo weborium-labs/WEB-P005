@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import apiClient from "../api/apiClient";
+import { usePageHeader, usePageSeo } from "../hooks/usePageContent";
 
 interface EditorialItem {
   id: string;
@@ -21,7 +22,11 @@ const defaultEditorialItems: EditorialItem[] = [
   },
 ];
 
+const PAGE_SLUG = "editorial-board-memberships";
+
 export const EditorialBoardPage: React.FC = () => {
+  usePageSeo(PAGE_SLUG);
+  const { heading: pageHeading } = usePageHeader(PAGE_SLUG);
   const [items, setItems] = useState<EditorialItem[]>(defaultEditorialItems);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -121,7 +126,7 @@ export const EditorialBoardPage: React.FC = () => {
         {/* Title Header */}
         <div className="pb-8 sm:pb-12 text-left">
           <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-bold text-[#111827] tracking-tight leading-tight">
-            Editorial Board Memberships
+            {pageHeading ?? "Editorial Board Memberships"}
           </h1>
         </div>
 
@@ -170,7 +175,7 @@ export const EditorialBoardPage: React.FC = () => {
       </main>
 
       {/* 3. Footer */}
-      <Footer />
+      <Footer pageSlug="footer" />
     </div>
   );
 };

@@ -26,3 +26,13 @@ export const uploadGlimpseImages: RequestHandler = multer({
     files: 5,
   },
 }).array("images", 5);
+
+/** Single-image upload used by the admin media library (field name: `file`). */
+export const uploadMediaImage: RequestHandler = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024,
+    files: 1,
+  },
+}).single("file");

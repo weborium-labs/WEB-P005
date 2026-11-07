@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { asyncHandler } from "../utils/async-handler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
+import { assertObjectId } from "../utils/object-id.js";
 import { Glimpse } from "../models/glimpse.model.js";
 import "multer";
 import {
@@ -14,14 +15,13 @@ import {
 // ==========================================
 export const addGlimpses = asyncHandler(async (req: Request, res: Response) => {
   const files = req.files as Express.Multer.File[];
-  // A non-multipart request leaves req.body undefined (Multer only parses
-  // multipart); fall back so we can return a proper 400 instead of a 500.
-  const { user_id } = req.body ?? {};
 
-  const ownerId = user_id || (req as any).user?.id;
+  // Ownership comes from the verified access token; a multipart field can
+  // never assign the upload to a different account.
+  const ownerId = (req as Request & { user?: { id?: string } }).user?.id;
 
   if (!ownerId) {
-    throw new ApiError(400, "user_id is required.");
+    throw new ApiError(401, "Unable to resolve the authenticated owner.");
   }
 
   if (!files || files.length === 0) {
@@ -72,26 +72,52 @@ export const addGlimpses = asyncHandler(async (req: Request, res: Response) => {
 // 2. GET ALL GLIMPSES (PUBLIC)
 // ==========================================
 export const getAllGlimpses = asyncHandler(async (req: Request, res: Response) => {
-  const { user_id } = req.query;
+  const { validatedQuery } = req as Request & {
+    validatedQuery?: { user_id?: string; page?: number; limit?: number };
+  };
+  const { user_id, page, limit } =
+    validatedQuery ?? (req.query as { user_id?: string; page?: number; limit?: number });
 
-  const filter: Record<string, any> = {};
-  
-  // If user_id is provided, filter by it; otherwise, fetch all glimpses
+  const filter: Record<string, unknown> = {};
+
+  // If user_id is provided, filter by it; otherwise fetch all glimpses.
   if (user_id) {
     filter.user_id = String(user_id);
   }
 
-  const glimpses = await Glimpse.find(filter).sort({ createdAt: -1, order: 1 });
+  const base = Glimpse.find(filter).sort({ createdAt: -1, order: 1 });
+
+  // Paging is opt-in: without `limit` the historical `{total, items}` contract
+  // is returned unchanged.
+  if (limit === undefined) {
+    const glimpses = await base.lean();
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        { total: glimpses.length, items: glimpses },
+        "Glimpses retrieved successfully.",
+      ),
+    );
+  }
+
+  const currentPage = page ?? 1;
+  const [items, total] = await Promise.all([
+    base.skip((currentPage - 1) * limit).limit(limit).lean(),
+    Glimpse.countDocuments(filter),
+  ]);
 
   return res.status(200).json(
     new ApiResponse(
       200,
       {
-        total: glimpses.length,
-        items: glimpses,
+        total,
+        items,
+        page: currentPage,
+        limit,
+        pages: Math.max(1, Math.ceil(total / limit)),
       },
-      "Glimpses retrieved successfully."
-    )
+      "Glimpses retrieved successfully.",
+    ),
   );
 });
 
@@ -99,7 +125,7 @@ export const getAllGlimpses = asyncHandler(async (req: Request, res: Response) =
 // 3. DELETE GLIMPSE (ADMIN)
 // ==========================================
 export const deleteGlimpse = asyncHandler(async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const id = assertObjectId(req.params.id, "Glimpse image not found.");
 
   const glimpse = await Glimpse.findById(id);
   if (!glimpse) {
