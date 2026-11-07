@@ -1,8 +1,21 @@
-const About = () => {
-    return (
-        <div>
+import React from 'react'
+import Navbar from '../components/Navbar'
+import Hero from '../components/Hero'
+import AboutSection from '../components/AboutSection'
+import Journey from '../components/Journey'
+import ContactSection from '../components/ContactSection'
+import Footer from '../components/Footer'
 
-        </div>
+function About() {
+    return (
+        <>
+            <Navbar />
+            <Hero />
+            <AboutSection />
+            <Journey />
+            <ContactSection />
+            <Footer />
+            </>
     )
 }
 
