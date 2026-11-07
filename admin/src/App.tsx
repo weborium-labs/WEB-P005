@@ -37,6 +37,7 @@ const App = () => {
   // Restore the session (refresh cookie -> access token -> verified profile)
   // exactly once per page load. Single-flight, StrictMode-safe.
   // detect change vercel1
+  // detect change vercel2
   useEffect(() => {
     void initializeAuth();
   }, []);
