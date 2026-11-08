@@ -39,6 +39,7 @@ const App = () => {
   // exactly once per page load. Single-flight, StrictMode-safe.
   // detect change vercel1
   // detect change vercel2
+  // detect change vercel3
   useEffect(() => {
     void initializeAuth();
   }, []);
