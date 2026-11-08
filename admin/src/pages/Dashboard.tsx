@@ -101,6 +101,12 @@ const Dashboard = () => {
       path: "/dashboard/media",
       description: "Cloudinary-backed images used across page content.",
     },
+    {
+      title: "Themes",
+      count: stats?.themes.total,
+      path: "/dashboard/themes",
+      description: "Colour tokens served to the public site; one theme is active.",
+    },
   ];
 
   const statusChips = stats ? (

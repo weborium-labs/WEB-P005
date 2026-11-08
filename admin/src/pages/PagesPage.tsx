@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Alert,
@@ -63,8 +63,6 @@ export const PagesPage = () => {
 
   const [deleteTarget, setDeleteTarget] = useState<Page | null>(null);
 
-  const retryRef = useRef(0);
-
   const load = useCallback(async (signal?: AbortSignal) => {
     setLoading(true);
     setError(null);
@@ -82,9 +80,12 @@ export const PagesPage = () => {
 
   useEffect(() => {
     const controller = new AbortController();
-    void load(controller.signal);
+    // Deferred so no state update happens synchronously in the effect body.
+    queueMicrotask(() => {
+      if (!controller.signal.aborted) void load(controller.signal);
+    });
     return () => controller.abort();
-  }, [load, retryRef.current]);
+  }, [load]);
 
   const validateCreate = (): string | null => {
     const { slug, title } = createForm;

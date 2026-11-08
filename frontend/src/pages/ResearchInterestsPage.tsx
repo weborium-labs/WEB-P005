@@ -265,7 +265,7 @@ export const ResearchInterestsPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#FDFDFD] flex flex-col justify-between font-['IBM_Plex_Sans',sans-serif] selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen bg-[var(--color-background)] flex flex-col justify-between font-['IBM_Plex_Sans',sans-serif] selection:bg-[var(--color-primary-light)] selection:text-[var(--color-text-primary)]">
       
       {/* 1. Header Navigation */}
       <Navbar />
@@ -275,7 +275,7 @@ export const ResearchInterestsPage: React.FC = () => {
         
         {/* Title */}
         <div className="pb-8 sm:pb-12 text-left">
-          <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-bold text-[#111827] tracking-tight leading-tight">
+          <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-bold text-[var(--color-text-heading)] tracking-tight leading-tight">
             {pageHeading ?? "Research Interests"}
           </h1>
         </div>
@@ -289,11 +289,11 @@ export const ResearchInterestsPage: React.FC = () => {
             {[...Array(4)].map((_, i) => (
               <div
                 key={i}
-                className="w-full h-[220px] rounded-[32px] sm:rounded-[36px] bg-white border border-[#E5E7EB] animate-pulse p-7 sm:p-9"
+                className="w-full h-[220px] rounded-[32px] sm:rounded-[36px] bg-[var(--color-surface)] border border-[var(--color-border)] animate-pulse p-7 sm:p-9"
               >
-                <div className="w-16 h-16 rounded-2xl bg-gray-100" />
-                <div className="mt-5 h-5 w-3/4 bg-gray-200 rounded-full" />
-                <div className="mt-3 h-3.5 w-full bg-gray-100 rounded-full" />
+                <div className="w-16 h-16 rounded-2xl bg-[var(--color-surface-muted)]" />
+                <div className="mt-5 h-5 w-3/4 bg-[var(--color-border)] rounded-full" />
+                <div className="mt-3 h-3.5 w-full bg-[var(--color-surface-muted)] rounded-full" />
               </div>
             ))}
           </div>
@@ -302,7 +302,7 @@ export const ResearchInterestsPage: React.FC = () => {
             {interests.map((item, idx) => (
               <div
                 key={item.id}
-                className="flex flex-col justify-start bg-white border border-[#E5E7EB] hover:border-[#CBD5E1] p-7 sm:p-9 rounded-[32px] sm:rounded-[36px] shadow-[0_4px_24px_rgba(0,0,0,0.02)] hover:shadow-md transition-all duration-200 min-h-[220px] sm:min-h-[235px]"
+                className="flex flex-col justify-start bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-border-soft)] p-7 sm:p-9 rounded-[32px] sm:rounded-[36px] shadow-[0_4px_24px_rgba(0,0,0,0.02)] hover:shadow-md transition-all duration-200 min-h-[220px] sm:min-h-[235px]"
               >
                 {/* 64x64 px Icon Box */}
                 <div className="w-16 h-16 flex items-center justify-start mb-5">
@@ -310,13 +310,13 @@ export const ResearchInterestsPage: React.FC = () => {
                 </div>
 
                 {/* Card Title */}
-                <h2 className="text-[18px] sm:text-[19px] font-semibold text-[#111827] leading-snug">
+                <h2 className="text-[18px] sm:text-[19px] font-semibold text-[var(--color-text-heading)] leading-snug">
                   {item.title}
                 </h2>
 
                 {/* Card Description */}
                 {item.description && (
-                  <p className="mt-2.5 text-[13px] sm:text-[13.5px] text-[#6B7280] leading-[1.6]">
+                  <p className="mt-2.5 text-[13px] sm:text-[13.5px] text-[var(--color-text-muted)] leading-[1.6]">
                     {item.description}
                   </p>
                 )}

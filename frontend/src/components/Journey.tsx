@@ -41,7 +41,7 @@ const font = "font-['Google_Sans_Flex',sans-serif]";
 const Dot = ({ className = "" }: { className?: string }) => (
     <span
         aria-hidden="true"
-        className={`absolute left-1/2 z-10 h-[14px] w-[14px] -translate-x-1/2 rounded-full bg-[#2F55F0] bg-[linear-gradient(225deg,#2F55F0_50%,#5A7CFB_85.36%,#88C7FF_120.71%)] ${className}`}
+        className={`absolute left-1/2 z-10 h-[14px] w-[14px] -translate-x-1/2 rounded-full bg-[var(--color-primary)] bg-[linear-gradient(225deg,#2F55F0_50%,#5A7CFB_85.36%,#88C7FF_120.71%)] ${className}`}
     />
 );
 
@@ -51,9 +51,9 @@ const Stem = ({ cap, className = "" }: { cap: "top" | "bottom"; className?: stri
         aria-hidden="true"
         className={`absolute left-1/2 h-[52px] w-px -translate-x-1/2 ${className}`}
     >
-        <span className="absolute inset-x-0 top-[3px] bottom-[3px] bg-[#8A93A6]" />
+        <span className="absolute inset-x-0 top-[3px] bottom-[3px] bg-[var(--color-text-faint)]" />
         <span
-            className={`absolute left-1/2 h-[5.33px] w-[5.33px] -translate-x-1/2 rounded-full bg-[#8A93A6] ${cap === "top" ? "top-0" : "bottom-0"
+            className={`absolute left-1/2 h-[5.33px] w-[5.33px] -translate-x-1/2 rounded-full bg-[var(--color-text-faint)] ${cap === "top" ? "top-0" : "bottom-0"
                 }`}
         />
     </span>
@@ -61,7 +61,7 @@ const Stem = ({ cap, className = "" }: { cap: "top" | "bottom"; className?: stri
 
 const Year = ({ children, className = "" }: { children: string; className?: string }) => (
     <p
-        className={`absolute left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-lg font-bold leading-tight text-[#5B6478] ${font} ${className}`}
+        className={`absolute left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-lg font-bold leading-tight text-[var(--color-text-secondary)] ${font} ${className}`}
     >
         {children}
     </p>
@@ -69,7 +69,7 @@ const Year = ({ children, className = "" }: { children: string; className?: stri
 
 const Label = ({ role, institution, className = "" }: Omit<Milestone, "year"> & { className?: string }) => (
     <p
-        className={`absolute left-1/2 w-[151px] max-w-full -translate-x-1/2 text-center text-base leading-tight text-[#131A28] ${font} ${className}`}
+        className={`absolute left-1/2 w-[151px] max-w-full -translate-x-1/2 text-center text-base leading-tight text-[var(--color-text-primary)] ${font} ${className}`}
     >
         <span className="block font-bold">{role}</span>
         <span className="block">{institution}</span>
@@ -106,7 +106,7 @@ export const Journey = ({
             <div className="mx-auto flex max-w-[1296px] flex-col items-center gap-10 lg:gap-16">
                 <div className="flex flex-col items-center justify-center gap-4 text-center">
                     <TrophyIcon />
-                    <h2 className={`text-[28px] font-medium leading-tight text-[#131A28] sm:text-[32px] ${font}`}>
+                    <h2 className={`text-[28px] font-medium leading-tight text-[var(--color-text-primary)] sm:text-[32px] ${font}`}>
                         {title}
                     </h2>
                 </div>
@@ -115,7 +115,7 @@ export const Journey = ({
                 <div className="relative hidden h-[294px] w-full lg:block">
                     <div
                         aria-hidden="true"
-                        className="absolute left-0 right-0 top-[127px] h-[2px] bg-[#131A28]"
+                        className="absolute left-0 right-0 top-[127px] h-[2px] bg-[var(--color-text-primary)]"
                     />
                     <ol className="relative mx-auto grid h-full w-[96.8%] grid-cols-5">
                         {rows.map((m, i) => {
@@ -147,16 +147,16 @@ export const Journey = ({
                 <ol className="relative w-full max-w-md lg:hidden">
                     <span
                         aria-hidden="true"
-                        className="absolute bottom-2 left-[6px] top-2 w-[2px] bg-[#131A28]"
+                        className="absolute bottom-2 left-[6px] top-2 w-[2px] bg-[var(--color-text-primary)]"
                     />
                     {rows.map((m) => (
                         <li key={`${m.year}-${m.role}`} className="relative pb-8 pl-9 last:pb-0">
                             <span
                                 aria-hidden="true"
-                                className="absolute left-0 top-1 h-[14px] w-[14px] rounded-full bg-[#2F55F0] bg-[linear-gradient(225deg,#2F55F0_50%,#5A7CFB_85.36%,#88C7FF_120.71%)]"
+                                className="absolute left-0 top-1 h-[14px] w-[14px] rounded-full bg-[var(--color-primary)] bg-[linear-gradient(225deg,#2F55F0_50%,#5A7CFB_85.36%,#88C7FF_120.71%)]"
                             />
-                            <p className={`text-lg font-bold leading-tight text-[#5B6478] ${font}`}>{m.year}</p>
-                            <p className={`mt-1 text-base leading-tight text-[#131A28] ${font}`}>
+                            <p className={`text-lg font-bold leading-tight text-[var(--color-text-secondary)] ${font}`}>{m.year}</p>
+                            <p className={`mt-1 text-base leading-tight text-[var(--color-text-primary)] ${font}`}>
                                 <span className="block font-bold">{m.role}</span>
                                 <span className="block">{m.institution}</span>
                             </p>

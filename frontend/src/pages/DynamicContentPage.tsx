@@ -151,29 +151,29 @@ export const DynamicContentPage: React.FC = () => {
     items.some((item) => Boolean(item.description));
 
   return (
-    <div className="min-h-screen bg-[#FDFDFD] flex flex-col justify-between font-sans selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen bg-[var(--color-background)] flex flex-col justify-between font-sans selection:bg-[var(--color-primary-light)] selection:text-[var(--color-text-primary)]">
       <Navbar />
 
       <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 pt-28 sm:pt-36 pb-20 flex-1">
         {loading ? (
           <div className="space-y-6">
-            <div className="h-9 w-64 bg-gray-200 rounded-full animate-pulse" />
+            <div className="h-9 w-64 bg-[var(--color-border)] rounded-full animate-pulse" />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
               {[1, 2, 3, 4, 5].map((i) => (
                 <div
                   key={i}
-                  className="w-full h-44 rounded-[28px] sm:rounded-[36px] bg-white border border-[#E5E7EB] animate-pulse"
+                  className="w-full h-44 rounded-[28px] sm:rounded-[36px] bg-[var(--color-surface)] border border-[var(--color-border)] animate-pulse"
                 />
               ))}
             </div>
           </div>
         ) : error ? (
-          <div className="text-center py-24 bg-white rounded-[32px] border border-[#E5E7EB] shadow-sm">
-            <h2 className="text-xl font-bold text-gray-800">Page Not Found</h2>
-            <p className="mt-2 text-sm text-gray-500">{error}</p>
+          <div className="text-center py-24 bg-[var(--color-surface)] rounded-[32px] border border-[var(--color-border)] shadow-sm">
+            <h2 className="text-xl font-bold text-[var(--color-text-heading)]">Page Not Found</h2>
+            <p className="mt-2 text-sm text-[var(--color-text-muted)]">{error}</p>
             <Link
               to="/"
-              className="mt-6 inline-block px-6 py-2.5 bg-blue-600 text-white text-xs font-semibold rounded-full hover:bg-blue-700 transition-colors"
+              className="mt-6 inline-block px-6 py-2.5 bg-[var(--color-accent-strong)] text-[var(--color-text-on-primary)] text-xs font-semibold rounded-full hover:bg-[var(--color-primary-strong)] transition-colors"
             >
               Return Home
             </Link>
@@ -182,7 +182,7 @@ export const DynamicContentPage: React.FC = () => {
           <div>
             {/* Page Title */}
             <div className="pb-8 sm:pb-12">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#111827] tracking-tight leading-tight">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[var(--color-text-heading)] tracking-tight leading-tight">
                 {pageTitle}
               </h1>
             </div>
@@ -193,13 +193,13 @@ export const DynamicContentPage: React.FC = () => {
                 {items.map((course) => (
                   <div
                     key={course.id}
-                    className="flex flex-col justify-start bg-white border border-[#E5E7EB] p-6 sm:p-8 rounded-[28px] sm:rounded-[36px] shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-[#CBD5E1] transition-all duration-200 min-h-[160px]"
+                    className="flex flex-col justify-start bg-[var(--color-surface)] border border-[var(--color-border)] p-6 sm:p-8 rounded-[28px] sm:rounded-[36px] shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-[var(--color-border-soft)] transition-all duration-200 min-h-[160px]"
                   >
-                    <h2 className="text-lg sm:text-[19px] font-bold text-[#111827] leading-snug">
+                    <h2 className="text-lg sm:text-[19px] font-bold text-[var(--color-text-heading)] leading-snug">
                       {course.title}
                     </h2>
                     {course.description && (
-                      <p className="mt-3 text-xs sm:text-[13px] text-[#6B7280] leading-relaxed">
+                      <p className="mt-3 text-xs sm:text-[13px] text-[var(--color-text-muted)] leading-relaxed">
                         {course.description}
                       </p>
                     )}
@@ -211,9 +211,9 @@ export const DynamicContentPage: React.FC = () => {
                 {items.map((item) => (
                   <div
                     key={item.id}
-                    className="flex items-center justify-between bg-white border border-[#E5E7EB] px-6 sm:px-8 py-5 rounded-[24px] sm:rounded-[36px] shadow-[0_2px_12px_rgba(0,0,0,0.02)]"
+                    className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)] px-6 sm:px-8 py-5 rounded-[24px] sm:rounded-[36px] shadow-[0_2px_12px_rgba(0,0,0,0.02)]"
                   >
-                    <p className="text-sm sm:text-base font-medium text-[#374151] leading-relaxed">
+                    <p className="text-sm sm:text-base font-medium text-[var(--color-text-body)] leading-relaxed">
                       {item.title}
                     </p>
                   </div>

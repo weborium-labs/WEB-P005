@@ -5,7 +5,7 @@ import { validateQuery } from "../middlewares/validate.middleware.js";
 import { uploadMediaImage } from "../middlewares/upload.middleware.js";
 import { z } from "zod";
 
-const router = Router();
+const router: Router = Router();
 
 const listMediaQuerySchema = z.object({
   page: z.coerce.number().int().min(1).max(10000).default(1),

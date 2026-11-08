@@ -58,7 +58,7 @@ export const PublicationsPage: React.FC = () => {
   }, [activeTab]);
 
   return (
-    <div className="min-h-screen bg-[#FDFDFD] flex flex-col justify-between font-sans selection:bg-blue-100">
+    <div className="min-h-screen bg-[var(--color-background)] flex flex-col justify-between font-sans selection:bg-[var(--color-primary-light)]">
       
       {/* 1. Navbar */}
       <div className="w-full">
@@ -71,22 +71,22 @@ export const PublicationsPage: React.FC = () => {
         {/* Header Section: Title & Pill Switcher */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-8 sm:pb-10">
           <div>
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-[#111827] tracking-tight leading-none">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-[var(--color-text-heading)] tracking-tight leading-none">
               {pageHeading ?? "Publications"}
             </h1>
-            <p className="mt-2 text-sm text-[#6B7280] font-normal">
+            <p className="mt-2 text-sm text-[var(--color-text-muted)] font-normal">
               {totalCount} {activeTab === "journal" ? "Journal Papers" : "Conference Papers"}
             </p>
           </div>
 
           {/* Filter Pills */}
-          <div className="inline-flex items-center bg-[#ECEFF3] p-1.5 rounded-full self-start sm:self-auto">
+          <div className="inline-flex items-center bg-[var(--color-surface-pill)] p-1.5 rounded-full self-start sm:self-auto">
             <button
               onClick={() => setActiveTab("journal")}
               className={`px-5 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 ${
                 activeTab === "journal"
-                  ? "bg-[#8EC5FC] text-white shadow-sm"
-                  : "text-[#4B5563] hover:text-[#111827]"
+                  ? "bg-[var(--color-accent-soft)] text-[var(--color-text-on-primary)] shadow-sm"
+                  : "text-[var(--color-text-subtle)] hover:text-[var(--color-text-heading)]"
               }`}
             >
               Journal Paper
@@ -95,8 +95,8 @@ export const PublicationsPage: React.FC = () => {
               onClick={() => setActiveTab("conference")}
               className={`px-5 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 ${
                 activeTab === "conference"
-                  ? "bg-[#8EC5FC] text-white shadow-sm"
-                  : "text-[#4B5563] hover:text-[#111827]"
+                  ? "bg-[var(--color-accent-soft)] text-[var(--color-text-on-primary)] shadow-sm"
+                  : "text-[var(--color-text-subtle)] hover:text-[var(--color-text-heading)]"
               }`}
             >
               Conference Paper
@@ -111,27 +111,27 @@ export const PublicationsPage: React.FC = () => {
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="w-full h-32 rounded-[28px] sm:rounded-[36px] bg-[#FFFFFF] border border-[#E5E7EB] p-7 sm:p-9 shadow-[0_4px_24px_rgba(0,0,0,0.02)] animate-pulse flex flex-col justify-between"
+                  className="w-full h-32 rounded-[28px] sm:rounded-[36px] bg-[var(--color-surface)] border border-[var(--color-border)] p-7 sm:p-9 shadow-[0_4px_24px_rgba(0,0,0,0.02)] animate-pulse flex flex-col justify-between"
                 >
-                  <div className="h-3 w-32 bg-gray-200 rounded-full" />
-                  <div className="h-4 w-3/4 bg-gray-200 rounded-full" />
-                  <div className="h-3 w-1/2 bg-gray-100 rounded-full" />
+                  <div className="h-3 w-32 bg-[var(--color-border)] rounded-full" />
+                  <div className="h-4 w-3/4 bg-[var(--color-border)] rounded-full" />
+                  <div className="h-3 w-1/2 bg-[var(--color-surface-muted)] rounded-full" />
                 </div>
               ))}
             </div>
           ) : error ? (
-            <div className="text-center py-16 bg-white rounded-[32px] border border-red-100">
+            <div className="text-center py-16 bg-[var(--color-surface)] rounded-[32px] border border-red-100">
               <p className="text-sm font-medium text-red-500">{error}</p>
               <button
                 onClick={() => setActiveTab((prev) => prev)}
-                className="mt-4 px-5 py-2 text-xs font-semibold bg-gray-100 hover:bg-gray-200 rounded-full text-gray-700 transition-colors"
+                className="mt-4 px-5 py-2 text-xs font-semibold bg-[var(--color-surface-muted)] hover:bg-[var(--color-border)] rounded-full text-[var(--color-text-body)] transition-colors"
               >
                 Retry
               </button>
             </div>
           ) : publications.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-[32px] border border-[#E5E7EB] shadow-sm">
-              <p className="text-sm font-medium text-gray-600">
+            <div className="text-center py-20 bg-[var(--color-surface)] rounded-[32px] border border-[var(--color-border)] shadow-sm">
+              <p className="text-sm font-medium text-[var(--color-text-subtle)]">
                 No {activeTab === "journal" ? "Journal Papers" : "Conference Papers"} found.
               </p>
             </div>
@@ -142,20 +142,20 @@ export const PublicationsPage: React.FC = () => {
                 href={paper.redirect_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center justify-between bg-white hover:bg-[#FAFCFF] border border-[#E5E7EB] hover:border-[#93C5FD] p-6 sm:p-8 lg:p-9 rounded-[28px] sm:rounded-[36px] shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-md transition-all duration-200"
+                className="group flex items-center justify-between bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] hover:border-[var(--color-accent-soft)] p-6 sm:p-8 lg:p-9 rounded-[28px] sm:rounded-[36px] shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-md transition-all duration-200"
               >
                 {/* Content */}
                 <div className="pr-6 flex-1">
-                  <div className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#8C95A6]">
+                  <div className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[var(--color-text-faint)]">
                     {paper.type === "journal" ? "JOURNAL" : "CONFERENCE"} - {paper.year}
                   </div>
 
-                  <h2 className="mt-2 text-sm sm:text-base md:text-[17px] font-bold text-[#111827] group-hover:text-blue-600 transition-colors duration-150 leading-snug">
+                  <h2 className="mt-2 text-sm sm:text-base md:text-[17px] font-bold text-[var(--color-text-heading)] group-hover:text-[var(--color-accent-strong)] transition-colors duration-150 leading-snug">
                     {paper.title}
                   </h2>
 
-                  <p className="mt-2 text-xs sm:text-[13px] text-[#6B7280] font-normal leading-relaxed">
-                    <span className="font-medium text-[#4B5563]">
+                  <p className="mt-2 text-xs sm:text-[13px] text-[var(--color-text-muted)] font-normal leading-relaxed">
+                    <span className="font-medium text-[var(--color-text-subtle)]">
                       {paper.publication_name}
                     </span>
                     {paper.volume_issue ? ` ${paper.volume_issue}` : ""}
@@ -172,7 +172,7 @@ export const PublicationsPage: React.FC = () => {
                       viewBox="0 0 8 14"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      className="stroke-[#0F172A] group-hover:stroke-blue-600 transition-colors duration-150"
+                      className="stroke-[var(--color-icon-strong)] group-hover:stroke-[var(--color-accent-strong)] transition-colors duration-150"
                     >
                       <path
                         d="M0.75005 0.75C0.75005 0.75 6.75 5.1689 6.75 6.75C6.75 8.3312 0.75 12.75 0.75 12.75"

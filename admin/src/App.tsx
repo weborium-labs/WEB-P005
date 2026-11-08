@@ -14,6 +14,7 @@ const GlimpsesPage = lazy(() => import("./pages/page.index").then((m) => ({ defa
 const PagesPage = lazy(() => import("./pages/page.index").then((m) => ({ default: m.PagesPage })));
 const PageEditorPage = lazy(() => import("./pages/page.index").then((m) => ({ default: m.PageEditorPage })));
 const MediaPage = lazy(() => import("./pages/page.index").then((m) => ({ default: m.MediaPage })));
+const ThemesPage = lazy(() => import("./pages/page.index").then((m) => ({ default: m.ThemesPage })));
 
 const RouteFallback = () => (
   <Box sx={{ display: "grid", placeItems: "center", py: 10 }} role="status">
@@ -60,6 +61,7 @@ const App = () => {
               <Route path="/dashboard/pages" element={<PagesPage />} />
               <Route path="/dashboard/pages/:slug" element={<PageEditorPage />} />
               <Route path="/dashboard/media" element={<MediaPage />} />
+              <Route path="/dashboard/themes" element={<ThemesPage />} />
             </Route>
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />

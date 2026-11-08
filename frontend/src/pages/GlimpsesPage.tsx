@@ -104,7 +104,7 @@ export const GlimpsesPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFDFD] flex flex-col justify-between font-sans selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen bg-[var(--color-background)] flex flex-col justify-between font-sans selection:bg-[var(--color-primary-light)] selection:text-[var(--color-text-primary)]">
       
       {/* Navbar */}
       <div className="w-full">
@@ -116,10 +116,10 @@ export const GlimpsesPage: React.FC = () => {
         
         {/* Title Header */}
         <div className="pb-8 sm:pb-10">
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#111827] tracking-tight leading-none">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-[var(--color-text-heading)] tracking-tight leading-none">
             {pageHeading ?? "Glimpses"}
           </h1>
-          <p className="mt-2 text-sm text-[#6B7280] font-normal">
+          <p className="mt-2 text-sm text-[var(--color-text-muted)] font-normal">
             Moments, academic sessions, and campus interactions ({totalItems} Photos)
           </p>
         </div>
@@ -130,26 +130,26 @@ export const GlimpsesPage: React.FC = () => {
             {[...Array(6)].map((_, i) => (
               <div
                 key={i}
-                className={`w-full rounded-[28px] sm:rounded-[36px] bg-[#E5E7EB]/70 animate-pulse border border-gray-200/80 ${
+                className={`w-full rounded-[28px] sm:rounded-[36px] bg-[var(--color-border)]/70 animate-pulse border border-[var(--color-border)]/80 ${
                   i % 2 === 0 ? "h-64 md:col-span-2" : "h-64 md:col-span-1"
                 }`}
               />
             ))}
           </div>
         ) : error ? (
-          <div className="text-center py-20 bg-white rounded-[32px] border border-red-100">
+          <div className="text-center py-20 bg-[var(--color-surface)] rounded-[32px] border border-red-100">
             <p className="text-sm font-medium text-red-500">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="mt-4 px-6 py-2.5 text-xs font-semibold bg-gray-100 hover:bg-gray-200 rounded-full text-gray-800 transition-colors"
+              className="mt-4 px-6 py-2.5 text-xs font-semibold bg-[var(--color-surface-muted)] hover:bg-[var(--color-border)] rounded-full text-[var(--color-text-heading)] transition-colors"
             >
               Retry
             </button>
           </div>
         ) : glimpses.length === 0 ? (
-          <div className="text-center py-24 bg-[#F9FAFB] rounded-[36px] border border-dashed border-[#D1D5DB]">
-            <p className="text-base font-semibold text-gray-700">No Glimpses Uploaded Yet</p>
-            <p className="mt-1 text-xs text-gray-500">Photos will appear here once uploaded via the admin portal.</p>
+          <div className="text-center py-24 bg-[var(--color-surface-raised)] rounded-[36px] border border-dashed border-[var(--color-border-strong)]">
+            <p className="text-base font-semibold text-[var(--color-text-body)]">No Glimpses Uploaded Yet</p>
+            <p className="mt-1 text-xs text-[var(--color-text-muted)]">Photos will appear here once uploaded via the admin portal.</p>
           </div>
         ) : (
           /* Gallery Grid */
@@ -160,7 +160,7 @@ export const GlimpsesPage: React.FC = () => {
                 <div
                   key={photo._id}
                   onClick={() => setSelectedPhotoIndex(globalIndex)}
-                  className={`group relative overflow-hidden rounded-[28px] sm:rounded-[36px] bg-[#E5E7EB] border border-[#E5E7EB] shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-lg transition-all duration-300 cursor-pointer ${getBentoSpanClass(
+                  className={`group relative overflow-hidden rounded-[28px] sm:rounded-[36px] bg-[var(--color-border)] border border-[var(--color-border)] shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-lg transition-all duration-300 cursor-pointer ${getBentoSpanClass(
                     index
                   )}`}
                 >
@@ -173,7 +173,7 @@ export const GlimpsesPage: React.FC = () => {
 
                   {/* Hover indicator */}
                   <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <span className="w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm text-gray-800 flex items-center justify-center shadow-md transform scale-75 group-hover:scale-100 transition-transform duration-300">
+                    <span className="w-12 h-12 rounded-full bg-[var(--color-surface)]/90 backdrop-blur-sm text-[var(--color-text-heading)] flex items-center justify-center shadow-md transform scale-75 group-hover:scale-100 transition-transform duration-300">
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <circle cx="11" cy="11" r="8" />
                         <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -194,7 +194,7 @@ export const GlimpsesPage: React.FC = () => {
             <button
               onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
               disabled={currentPage === 1}
-              className="px-4 py-2 rounded-full border border-gray-200 text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+              className="px-4 py-2 rounded-full border border-[var(--color-border)] text-xs sm:text-sm font-medium text-[var(--color-text-body)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-raised)] disabled:opacity-40 disabled:cursor-not-allowed transition-all"
             >
               Previous
             </button>
@@ -205,8 +205,8 @@ export const GlimpsesPage: React.FC = () => {
                 onClick={() => setCurrentPage(pageNum)}
                 className={`w-9 h-9 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 ${
                   currentPage === pageNum
-                    ? "bg-[#8EC5FC] text-white shadow-sm"
-                    : "text-gray-600 bg-white border border-gray-200 hover:bg-gray-50"
+                    ? "bg-[var(--color-accent-soft)] text-[var(--color-text-on-primary)] shadow-sm"
+                    : "text-[var(--color-text-subtle)] bg-[var(--color-surface)] border border-[var(--color-border)] hover:bg-[var(--color-surface-raised)]"
                 }`}
               >
                 {pageNum}
@@ -216,7 +216,7 @@ export const GlimpsesPage: React.FC = () => {
             <button
               onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 rounded-full border border-gray-200 text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+              className="px-4 py-2 rounded-full border border-[var(--color-border)] text-xs sm:text-sm font-medium text-[var(--color-text-body)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-raised)] disabled:opacity-40 disabled:cursor-not-allowed transition-all"
             >
               Next
             </button>
@@ -240,7 +240,7 @@ export const GlimpsesPage: React.FC = () => {
               e.stopPropagation();
               setSelectedPhotoIndex(null);
             }}
-            className="absolute top-6 right-6 z-[120] w-11 h-11 rounded-full bg-white/10 hover:bg-white/25 active:scale-95 text-white flex items-center justify-center transition-all duration-200 cursor-pointer shadow-lg"
+            className="absolute top-6 right-6 z-[120] w-11 h-11 rounded-full bg-[var(--color-surface)]/10 hover:bg-[var(--color-surface)]/25 active:scale-95 text-[var(--color-text-on-primary)] flex items-center justify-center transition-all duration-200 cursor-pointer shadow-lg"
             aria-label="Close modal"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -257,7 +257,7 @@ export const GlimpsesPage: React.FC = () => {
                 e.stopPropagation();
                 handlePrevPhoto();
               }}
-              className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-[120] w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/15 hover:bg-white/30 active:scale-95 text-white flex items-center justify-center transition-all duration-200 cursor-pointer shadow-xl backdrop-blur-sm group"
+              className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-[120] w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[var(--color-surface)]/15 hover:bg-[var(--color-surface)]/30 active:scale-95 text-[var(--color-text-on-primary)] flex items-center justify-center transition-all duration-200 cursor-pointer shadow-xl backdrop-blur-sm group"
               aria-label="Previous photo"
             >
               <svg
@@ -290,7 +290,7 @@ export const GlimpsesPage: React.FC = () => {
             />
 
             {/* Photo Counter Pill (e.g. 1 / 5) */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-black/60 backdrop-blur-md text-white text-xs font-semibold tracking-wider border border-white/10 shadow-lg pointer-events-none">
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-black/60 backdrop-blur-md text-[var(--color-text-on-primary)] text-xs font-semibold tracking-wider border border-[var(--color-surface)]/10 shadow-lg pointer-events-none">
               {selectedPhotoIndex + 1} / {glimpses.length}
             </div>
           </div>
@@ -303,7 +303,7 @@ export const GlimpsesPage: React.FC = () => {
                 e.stopPropagation();
                 handleNextPhoto();
               }}
-              className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-[120] w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/15 hover:bg-white/30 active:scale-95 text-white flex items-center justify-center transition-all duration-200 cursor-pointer shadow-xl backdrop-blur-sm group"
+              className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-[120] w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[var(--color-surface)]/15 hover:bg-[var(--color-surface)]/30 active:scale-95 text-[var(--color-text-on-primary)] flex items-center justify-center transition-all duration-200 cursor-pointer shadow-xl backdrop-blur-sm group"
               aria-label="Next photo"
             >
               <svg

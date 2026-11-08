@@ -12,7 +12,7 @@ interface HonorsProps {
 }
 
 const glass =
-    "bg-white bg-[linear-gradient(90deg,rgba(255,255,255,0.02)_0%,rgba(0,0,0,0.02)_47.08%,rgba(255,255,255,0.02)_100%)] " +
+    "bg-[var(--color-surface)] bg-[linear-gradient(90deg,rgba(255,255,255,0.02)_0%,rgba(0,0,0,0.02)_47.08%,rgba(255,255,255,0.02)_100%)] " +
     "shadow-[inset_4px_0_4px_0_rgba(255,255,255,0.25),inset_0_2px_5px_0_rgba(255,255,255,0.54),2px_2px_120px_0_rgba(0,0,0,0.12)]";
 
 const defaultItems: Honor[] = [
@@ -43,7 +43,7 @@ export const Honors = ({
             >
                 <TrophyIcon />
 
-                <h2 className="mt-4 text-center font-['Google_Sans_Flex',sans-serif] text-[28px] font-medium leading-tight text-[#131A28] sm:text-[32px]">
+                <h2 className="mt-4 text-center font-['Google_Sans_Flex',sans-serif] text-[28px] font-medium leading-tight text-[var(--color-text-primary)] sm:text-[32px]">
                     {heading}
                 </h2>
 
@@ -53,10 +53,10 @@ export const Honors = ({
                             key={item.title}
                             className={`flex flex-col items-start rounded-[32px] px-6 py-4 ${glass}`}
                         >
-                            <span className="font-['Google_Sans_Flex',sans-serif] text-[28px] font-medium leading-[1.15] text-[#131A28] sm:text-[32px] lg:text-[40px]">
+                            <span className="font-['Google_Sans_Flex',sans-serif] text-[28px] font-medium leading-[1.15] text-[var(--color-text-primary)] sm:text-[32px] lg:text-[40px]">
                                 {item.title}
                             </span>
-                            <span className="font-['Google_Sans_Flex',sans-serif] text-base font-medium leading-6 text-[#5B6478]">
+                            <span className="font-['Google_Sans_Flex',sans-serif] text-base font-medium leading-6 text-[var(--color-text-secondary)]">
                                 {item.description}
                             </span>
                         </li>

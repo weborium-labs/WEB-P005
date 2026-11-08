@@ -53,15 +53,15 @@ export const JourneyTimeline: React.FC = () => {
   return (
     <section className="w-full py-16 px-4 sm:px-6 flex flex-col items-center font-['Google_Sans',_sans-serif]">
       {/* Title */}
-      <h2 className="text-[28px] sm:text-[32px] md:text-[36px] font-semibold text-[#111827] tracking-tight mb-7 md:mb-12 text-center">
+      <h2 className="text-[28px] sm:text-[32px] md:text-[36px] font-semibold text-[var(--color-text-heading)] tracking-tight mb-7 md:mb-12 text-center">
         Journey
       </h2>
 
       {/* ========================================================
           1. MOBILE VIEW (< lg): Vertical Timeline Inside Card
           ======================================================== */}
-      <div className="w-full max-w-[420px] lg:hidden bg-white rounded-[32px] p-7 sm:p-9 border border-gray-100/90 shadow-[0_10px_35px_-8px_rgba(0,0,0,0.06)]">
-        <div className="relative border-l-2 border-[#64748b]/40 ml-3.5 pl-6 flex flex-col space-y-8 py-2">
+      <div className="w-full max-w-[420px] lg:hidden bg-[var(--color-surface)] rounded-[32px] p-7 sm:p-9 border border-[var(--color-surface-muted)]/90 shadow-[0_10px_35px_-8px_rgba(0,0,0,0.06)]">
+        <div className="relative border-l-2 border-[var(--color-text-muted)]/40 ml-3.5 pl-6 flex flex-col space-y-8 py-2">
           {milestones.map((item) => {
             const isHovered = hoveredId === item.id;
             return (
@@ -73,26 +73,26 @@ export const JourneyTimeline: React.FC = () => {
               >
                 {/* Blue Dot on the vertical line */}
                 <span
-                  className={`absolute -left-[31px] top-1.5 w-[14px] h-[14px] rounded-full bg-[#3b66f5] ring-4 ring-white transition-all duration-300 ${
+                  className={`absolute -left-[31px] top-1.5 w-[14px] h-[14px] rounded-full bg-[var(--color-accent)] ring-4 ring-[var(--color-surface)] transition-all duration-300 ${
                     isHovered
-                      ? "scale-125 shadow-[0_0_12px_rgba(59,102,245,0.7)]"
+                      ? "scale-125 shadow-[0_0_12px_var(--color-glow-accent)]"
                       : "group-hover:scale-125"
                   }`}
                 />
 
                 {/* Content */}
                 <div>
-                  <span className="block text-[13px] font-semibold text-[#6b7280] tracking-wide">
+                  <span className="block text-[13px] font-semibold text-[var(--color-text-muted)] tracking-wide">
                     {item.year}
                   </span>
                   <h3
                     className={`text-[15px] sm:text-[16px] font-bold mt-0.5 transition-colors duration-200 ${
-                      isHovered ? "text-[#3b66f5]" : "text-[#111827]"
+                      isHovered ? "text-[var(--color-accent)]" : "text-[var(--color-text-heading)]"
                     }`}
                   >
                     {item.role}
                   </h3>
-                  <p className="text-[13px] sm:text-[13.5px] text-[#4b5563] mt-0.5 leading-snug">
+                  <p className="text-[13px] sm:text-[13.5px] text-[var(--color-text-subtle)] mt-0.5 leading-snug">
                     {item.institution}
                   </p>
                 </div>
@@ -107,7 +107,7 @@ export const JourneyTimeline: React.FC = () => {
           ======================================================== */}
       <div className="hidden lg:block w-full max-w-6xl mx-auto relative px-6 py-28">
         {/* Horizontal Center Axis Line */}
-        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[2px] bg-[#64748b]/45 z-0" />
+        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[2px] bg-[var(--color-text-muted)]/45 z-0" />
 
         {/* Milestones Container */}
         <div className="relative z-10 grid grid-cols-5 gap-2 items-center">
@@ -134,22 +134,22 @@ export const JourneyTimeline: React.FC = () => {
                       <div className="flex flex-col items-center">
                         <h3
                           className={`text-[14px] font-bold transition-colors duration-200 leading-tight ${
-                            isHovered ? "text-[#3b66f5]" : "text-[#111827]"
+                            isHovered ? "text-[var(--color-accent)]" : "text-[var(--color-text-heading)]"
                           }`}
                         >
                           {item.role}
                         </h3>
-                        <p className="text-[12px] text-[#4b5563] mt-0.5 leading-snug">
+                        <p className="text-[12px] text-[var(--color-text-subtle)] mt-0.5 leading-snug">
                           {item.institution}
                         </p>
                       </div>
 
                       {/* Small Vertical Connector Stem */}
-                      <div className="w-[1.5px] h-4 bg-[#94a3b8]/70 my-1.5" />
+                      <div className="w-[1.5px] h-4 bg-[var(--color-text-faint)]/70 my-1.5" />
                     </>
                   ) : (
                     /* Top Year (when text is bottom) */
-                    <span className="text-[14px] font-semibold text-[#4b5563] mb-1">
+                    <span className="text-[14px] font-semibold text-[var(--color-text-subtle)] mb-1">
                       {item.year}
                     </span>
                   )}
@@ -158,9 +158,9 @@ export const JourneyTimeline: React.FC = () => {
                 {/* ----------------- CENTER CIRCLE / DOT ----------------- */}
                 <div className="relative flex items-center justify-center">
                   <div
-                    className={`w-[14px] h-[14px] rounded-full bg-[#3b66f5] ring-4 ring-white shadow-sm transition-all duration-300 ${
+                    className={`w-[14px] h-[14px] rounded-full bg-[var(--color-accent)] ring-4 ring-[var(--color-surface)] shadow-sm transition-all duration-300 ${
                       isHovered
-                        ? "scale-135 ring-[#e0e7ff] shadow-[0_0_14px_rgba(59,102,245,0.7)]"
+                        ? "scale-135 ring-[var(--color-primary-glow)] shadow-[0_0_14px_var(--color-glow-accent)]"
                         : "group-hover:scale-125"
                     }`}
                   />
@@ -174,24 +174,24 @@ export const JourneyTimeline: React.FC = () => {
                 >
                   {isTop ? (
                     /* Bottom Year (when text is top) */
-                    <span className="text-[14px] font-semibold text-[#4b5563] mt-1">
+                    <span className="text-[14px] font-semibold text-[var(--color-text-subtle)] mt-1">
                       {item.year}
                     </span>
                   ) : (
                     <>
                       {/* Small Vertical Connector Stem */}
-                      <div className="w-[1.5px] h-4 bg-[#94a3b8]/70 my-1.5" />
+                      <div className="w-[1.5px] h-4 bg-[var(--color-text-faint)]/70 my-1.5" />
 
                       {/* Bottom Role & Institution */}
                       <div className="flex flex-col items-center">
                         <h3
                           className={`text-[14px] font-bold transition-colors duration-200 leading-tight ${
-                            isHovered ? "text-[#3b66f5]" : "text-[#111827]"
+                            isHovered ? "text-[var(--color-accent)]" : "text-[var(--color-text-heading)]"
                           }`}
                         >
                           {item.role}
                         </h3>
-                        <p className="text-[12px] text-[#4b5563] mt-0.5 leading-snug">
+                        <p className="text-[12px] text-[var(--color-text-subtle)] mt-0.5 leading-snug">
                           {item.institution}
                         </p>
                       </div>

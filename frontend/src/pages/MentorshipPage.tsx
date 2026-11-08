@@ -189,7 +189,7 @@ export const MentorshipPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#FDFDFD] flex flex-col justify-between font-['IBM_Plex_Sans',sans-serif] selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen bg-[var(--color-background)] flex flex-col justify-between font-['IBM_Plex_Sans',sans-serif] selection:bg-[var(--color-primary-light)] selection:text-[var(--color-text-primary)]">
       
       {/* 1. Header Navigation */}
       <Navbar />
@@ -199,27 +199,27 @@ export const MentorshipPage: React.FC = () => {
         
         {/* Title Header */}
         <div className="pb-6 sm:pb-8">
-          <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-bold text-[#111827] tracking-tight leading-tight">
+          <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-bold text-[var(--color-text-heading)] tracking-tight leading-tight">
             {pageHeading ?? "Mentorship"}
           </h1>
         </div>
 
         {/* Counter Badge & Intro Section */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 pb-10 sm:pb-12 border-b border-[#F0F2F5]">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 pb-10 sm:pb-12 border-b border-[var(--color-border-muted)]">
           {/* 10+ Students Mentored Rounded Card */}
           {mentorStat && (
-            <div className="flex flex-col items-center justify-center bg-[#F9FAFB] border border-[#E5E7EB] rounded-[24px] sm:rounded-[28px] px-6 py-4 min-w-[140px] w-fit shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
-              <span className="text-2xl sm:text-3xl font-extrabold text-[#111827] leading-none">
+            <div className="flex flex-col items-center justify-center bg-[var(--color-surface-raised)] border border-[var(--color-border)] rounded-[24px] sm:rounded-[28px] px-6 py-4 min-w-[140px] w-fit shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
+              <span className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text-heading)] leading-none">
                 {mentorStat.value}
               </span>
-              <span className="text-[12px] sm:text-[13px] font-medium text-[#6B7280] mt-1 text-center whitespace-nowrap">
+              <span className="text-[12px] sm:text-[13px] font-medium text-[var(--color-text-muted)] mt-1 text-center whitespace-nowrap">
                 {mentorStat.label}
               </span>
             </div>
           )}
 
           {/* Subtext description */}
-          <p className="text-xs sm:text-[13.5px] text-[#6B7280] leading-relaxed max-w-2xl">
+          <p className="text-xs sm:text-[13.5px] text-[var(--color-text-muted)] leading-relaxed max-w-2xl">
             {pageDescription ??
               "I have guided students and early-career researchers across numerous research publications, projects, and academic outcomes. A dedicated directory of supervised students and projects will be listed here once finalized."}
           </p>
@@ -232,11 +232,11 @@ export const MentorshipPage: React.FC = () => {
               {[...Array(6)].map((_, i) => (
                 <div
                   key={i}
-                  className="w-full h-32 rounded-[28px] sm:rounded-[36px] bg-white border border-[#E5E7EB] animate-pulse p-6"
+                  className="w-full h-32 rounded-[28px] sm:rounded-[36px] bg-[var(--color-surface)] border border-[var(--color-border)] animate-pulse p-6"
                 >
-                  <div className="h-4 w-28 bg-gray-200 rounded-full" />
-                  <div className="mt-3 h-5 w-4/5 bg-gray-100 rounded-full" />
-                  <div className="mt-3 h-3 w-1/3 bg-gray-100 rounded-full" />
+                  <div className="h-4 w-28 bg-[var(--color-border)] rounded-full" />
+                  <div className="mt-3 h-5 w-4/5 bg-[var(--color-surface-muted)] rounded-full" />
+                  <div className="mt-3 h-3 w-1/3 bg-[var(--color-surface-muted)] rounded-full" />
                 </div>
               ))}
             </div>
@@ -248,19 +248,19 @@ export const MentorshipPage: React.FC = () => {
                     <div className="flex flex-col justify-center flex-1">
                       {/* Student Name */}
                       {item.studentName && (
-                        <span className="text-[11px] sm:text-[12px] font-medium text-[#9CA3AF] tracking-wide mb-1">
+                        <span className="text-[11px] sm:text-[12px] font-medium text-[var(--color-text-faint)] tracking-wide mb-1">
                           {item.studentName}
                         </span>
                       )}
 
                       {/* Project Title */}
-                      <h2 className="text-[14.5px] sm:text-[15.5px] font-semibold text-[#111827] leading-snug line-clamp-2">
+                      <h2 className="text-[14.5px] sm:text-[15.5px] font-semibold text-[var(--color-text-heading)] leading-snug line-clamp-2">
                         {item.title}
                       </h2>
 
                       {/* Category Tag */}
                       {item.category && (
-                        <span className="mt-2 text-[11px] sm:text-[12px] font-normal text-[#9CA3AF]">
+                        <span className="mt-2 text-[11px] sm:text-[12px] font-normal text-[var(--color-text-faint)]">
                           {item.category}
                         </span>
                       )}
@@ -274,7 +274,7 @@ export const MentorshipPage: React.FC = () => {
                         viewBox="0 0 8 14"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
-                        className="stroke-[#9CA3AF] group-hover:stroke-[#111827] group-hover:translate-x-0.5 transition-all duration-200"
+                        className="stroke-[var(--color-text-faint)] group-hover:stroke-[var(--color-text-heading)] group-hover:translate-x-0.5 transition-all duration-200"
                       >
                         <path
                           d="M0.75005 0.75C0.75005 0.75 6.75 5.1689 6.75 6.75C6.75 8.3312 0.75 12.75 0.75 12.75"
@@ -293,14 +293,14 @@ export const MentorshipPage: React.FC = () => {
                     href={item.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-center bg-white border border-[#E5E7EB] hover:border-[#CBD5E1] px-6 sm:px-8 py-5 rounded-[24px] sm:rounded-[32px] shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-md transition-all duration-200"
+                    className="group flex items-center bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-border-soft)] px-6 sm:px-8 py-5 rounded-[24px] sm:rounded-[32px] shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-md transition-all duration-200"
                   >
                     {CardInner}
                   </a>
                 ) : (
                   <div
                     key={item.id}
-                    className="group flex items-center bg-white border border-[#E5E7EB] hover:border-[#CBD5E1] px-6 sm:px-8 py-5 rounded-[24px] sm:rounded-[32px] shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-md transition-all duration-200 cursor-default"
+                    className="group flex items-center bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-border-soft)] px-6 sm:px-8 py-5 rounded-[24px] sm:rounded-[32px] shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-md transition-all duration-200 cursor-default"
                   >
                     {CardInner}
                   </div>

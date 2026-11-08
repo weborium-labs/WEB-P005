@@ -135,7 +135,7 @@ export const CoursesTaughtPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#FDFDFD] flex flex-col justify-between font-['IBM_Plex_Sans',sans-serif] selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen bg-[var(--color-background)] flex flex-col justify-between font-['IBM_Plex_Sans',sans-serif] selection:bg-[var(--color-primary-light)] selection:text-[var(--color-text-primary)]">
       
       {/* 1. Header Navigation */}
       <Navbar />
@@ -145,7 +145,7 @@ export const CoursesTaughtPage: React.FC = () => {
         
         {/* Page Title */}
         <div className="pb-8 sm:pb-12">
-          <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-bold text-[#111827] tracking-tight leading-tight">
+          <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-bold text-[var(--color-text-heading)] tracking-tight leading-tight">
             {pageHeading ?? "Courses Taught"}
           </h1>
         </div>
@@ -156,11 +156,11 @@ export const CoursesTaughtPage: React.FC = () => {
             {[...Array(5)].map((_, i) => (
               <div
                 key={i}
-                className="w-full h-[155px] sm:h-[165px] rounded-[24px] sm:rounded-[32px] bg-white border border-[#E5E7EB] animate-pulse p-6"
+                className="w-full h-[155px] sm:h-[165px] rounded-[24px] sm:rounded-[32px] bg-[var(--color-surface)] border border-[var(--color-border)] animate-pulse p-6"
               >
-                <div className="h-5 w-3/4 bg-gray-200 rounded-full" />
-                <div className="mt-4 h-3 w-full bg-gray-100 rounded-full" />
-                <div className="mt-2 h-3 w-5/6 bg-gray-100 rounded-full" />
+                <div className="h-5 w-3/4 bg-[var(--color-border)] rounded-full" />
+                <div className="mt-4 h-3 w-full bg-[var(--color-surface-muted)] rounded-full" />
+                <div className="mt-2 h-3 w-5/6 bg-[var(--color-surface-muted)] rounded-full" />
               </div>
             ))}
           </div>
@@ -169,16 +169,16 @@ export const CoursesTaughtPage: React.FC = () => {
             {courses.map((course) => (
               <div
                 key={course.id}
-                className="flex flex-col justify-start bg-white border border-[#E5E7EB] hover:border-[#CBD5E1] p-6 sm:p-7 rounded-[26px] sm:rounded-[32px] shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-md transition-all duration-200 min-h-[155px] sm:min-h-[165px]"
+                className="flex flex-col justify-start bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-border-soft)] p-6 sm:p-7 rounded-[26px] sm:rounded-[32px] shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-md transition-all duration-200 min-h-[155px] sm:min-h-[165px]"
               >
                 {/* Course Name */}
-                <h2 className="text-[17px] sm:text-[18px] font-semibold text-[#111827] leading-snug">
+                <h2 className="text-[17px] sm:text-[18px] font-semibold text-[var(--color-text-heading)] leading-snug">
                   {course.title}
                 </h2>
 
                 {/* Course Description */}
                 {course.description && (
-                  <p className="mt-2.5 text-[13px] sm:text-[13.5px] text-[#6B7280] leading-[1.6]">
+                  <p className="mt-2.5 text-[13px] sm:text-[13.5px] text-[var(--color-text-muted)] leading-[1.6]">
                     {course.description}
                   </p>
                 )}

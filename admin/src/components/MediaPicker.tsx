@@ -65,12 +65,17 @@ export const MediaPicker = ({ open, value, onSelect, onClose }: MediaPickerProps
   useEffect(() => {
     if (!open) return;
     const controller = new AbortController();
-    void load(page, controller.signal);
+    // Deferred so no state update happens synchronously in the effect body.
+    queueMicrotask(() => {
+      if (!controller.signal.aborted) void load(page, controller.signal);
+    });
     return () => controller.abort();
   }, [open, page, load]);
 
   useEffect(() => {
-    if (open) setUrlDraft(value?.url ?? "");
+    if (!open) return;
+    // Deferred so no state update happens synchronously in the effect body.
+    queueMicrotask(() => setUrlDraft(value?.url ?? ""));
   }, [open, value]);
 
   const handleUpload = async (file: File) => {
@@ -207,20 +212,12 @@ export const MediaPicker = ({ open, value, onSelect, onClose }: MediaPickerProps
             {items.map((item) => (
               <Box
                 key={item._id}
-                component="button"
-                type="button"
-                onClick={() => {
-                  onSelect({ url: item.url, public_id: item.public_id, alt: item.alt });
-                  onClose();
-                }}
                 sx={{
                   position: "relative",
-                  p: 0,
                   border: "1px solid",
                   borderColor: value?.public_id === item.public_id ? "primary.main" : "divider",
                   borderRadius: 1,
                   overflow: "hidden",
-                  cursor: "pointer",
                   background: "transparent",
                   lineHeight: 0,
                 }}
@@ -230,6 +227,26 @@ export const MediaPicker = ({ open, value, onSelect, onClose }: MediaPickerProps
                   src={item.url}
                   alt={item.alt || "Media item"}
                   sx={{ width: "100%", aspectRatio: "1 / 1", objectFit: "cover" }}
+                />
+                {/* Full-tile select control sits *behind* the delete button so
+                    no interactive element is ever nested inside another. */}
+                <Button
+                  type="button"
+                  aria-label={`Select ${item.alt || "image"}`}
+                  onClick={() => {
+                    onSelect({ url: item.url, public_id: item.public_id, alt: item.alt });
+                    onClose();
+                  }}
+                  sx={{
+                    position: "absolute",
+                    inset: 0,
+                    width: "100%",
+                    height: "100%",
+                    minWidth: 0,
+                    minHeight: 0,
+                    p: 0,
+                    borderRadius: 0,
+                  }}
                 />
                 <IconButton
                   size="small"
@@ -242,6 +259,7 @@ export const MediaPicker = ({ open, value, onSelect, onClose }: MediaPickerProps
                     position: "absolute",
                     top: 4,
                     right: 4,
+                    zIndex: 2,
                     bgcolor: "rgba(255,255,255,0.9)",
                     "&:hover": { bgcolor: "rgba(255,255,255,1)" },
                   }}

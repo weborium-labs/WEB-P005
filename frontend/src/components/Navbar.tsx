@@ -256,11 +256,11 @@ const Navbar = ({
     const anyOpen = openDropdown !== null;
     const color = anyOpen
       ? openDropdown === label
-        ? "text-[#1a1d2e]"
-        : "text-[#5b6178] hover:text-[#1a1d2e]"
+        ? "text-[var(--color-text-nav)]"
+        : "text-[var(--color-text-hero)] hover:text-[var(--color-text-nav)]"
       : isActive(href)
-      ? "text-[#3b55e6]"
-      : "text-[#1a1d2e] hover:text-[#3b55e6]";
+      ? "text-[var(--color-secondary)]"
+      : "text-[var(--color-text-nav)] hover:text-[var(--color-secondary)]";
     return `inline-flex items-center gap-1.5 text-[17px] leading-none transition-colors duration-200 ${color}`;
   };
 
@@ -273,7 +273,7 @@ const Navbar = ({
         ref={navRef}
         aria-label="Main"
         onMouseLeave={closePanel}
-        className="relative mx-auto max-w-[1280px] overflow-hidden rounded-[34px] sm:rounded-[39px] border border-white/60 bg-[#efefef]/75 backdrop-blur-xl backdrop-saturate-150 shadow-[0_10px_30px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.8)]"
+        className="relative mx-auto max-w-[1280px] overflow-hidden rounded-[34px] sm:rounded-[39px] border border-[var(--color-surface)]/60 bg-[var(--color-border-faint)]/75 backdrop-blur-xl backdrop-saturate-150 shadow-[0_10px_30px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.8)]"
       >
         {/* Top row */}
         <div className="flex h-[66px] sm:h-[76px] items-center justify-between pl-3 pr-3 sm:pl-[30px] sm:pr-[18px]">
@@ -329,7 +329,7 @@ const Navbar = ({
             aria-label="Toggle menu"
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((p) => !p)}
-            className="lg:hidden mr-1 flex h-11 w-11 items-center justify-center rounded-full text-[#1a1d2e] transition-colors hover:bg-black/5"
+            className="lg:hidden mr-1 flex h-11 w-11 items-center justify-center rounded-full text-[var(--color-text-nav)] transition-colors hover:bg-black/5"
           >
             <svg
               width="24"
@@ -360,7 +360,7 @@ const Navbar = ({
             <div style={{ paddingLeft: panelLeft }} className="pb-10 pt-5 pr-[30px]">
               {activePanel && (
                 <div key={activePanel.id || activePanel.label} className={panelOpen ? "animate-[fadeUp_0.4s_ease-out]" : ""}>
-                  <p className="text-[17px] leading-none text-[#5b6178]">
+                  <p className="text-[17px] leading-none text-[var(--color-text-hero)]">
                     {activePanel.heading ?? `Explore ${activePanel.label}`}
                   </p>
                   <ul className="mt-5 flex flex-col">
@@ -371,7 +371,7 @@ const Navbar = ({
                           <a
                             href={child.href}
                             tabIndex={panelOpen ? 0 : -1}
-                            className="block w-fit py-[14px] text-[28px] xl:text-[32px] leading-[1.15] text-[#1a1d2e] transition-colors duration-200 hover:text-[#3b55e6]"
+                            className="block w-fit py-[14px] text-[28px] xl:text-[32px] leading-[1.15] text-[var(--color-text-nav)] transition-colors duration-200 hover:text-[var(--color-secondary)]"
                           >
                             {child.label}
                           </a>
@@ -388,7 +388,7 @@ const Navbar = ({
 
       {/* Mobile panel */}
       <div
-        className={`lg:hidden mx-auto mt-2 max-w-[1280px] origin-top overflow-hidden rounded-[32px] border border-white/60 bg-[#efefef]/90 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.1)] transition-all duration-300 ${
+        className={`lg:hidden mx-auto mt-2 max-w-[1280px] origin-top overflow-hidden rounded-[32px] border border-[var(--color-surface)]/60 bg-[var(--color-border-faint)]/90 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.1)] transition-all duration-300 ${
           mobileOpen
             ? "max-h-[85vh] scale-100 opacity-100"
             : "pointer-events-none max-h-0 scale-95 opacity-0"
@@ -408,7 +408,7 @@ const Navbar = ({
                         setMobileExpanded(mobileExpanded === item.label ? null : item.label)
                       }
                       className={`flex w-full items-center justify-between py-3.5 text-[17px] ${
-                        isActive(item.href) ? "text-[#3b55e6]" : "text-[#1a1d2e]"
+                        isActive(item.href) ? "text-[var(--color-secondary)]" : "text-[var(--color-text-nav)]"
                       }`}
                     >
                       {item.label}
@@ -423,7 +423,7 @@ const Navbar = ({
                         const mChildKey = child.id || `mob-child-${cIdx}-${child.label || "sub"}`;
                         return (
                           <li key={mChildKey}>
-                            <a href={child.href} className="block py-2 text-[15px] text-[#1a1d2e]/80">
+                            <a href={child.href} className="block py-2 text-[15px] text-[var(--color-text-nav)]/80">
                               {child.label}
                             </a>
                           </li>
@@ -435,7 +435,7 @@ const Navbar = ({
                   <a
                     href={item.href}
                     className={`block py-3.5 text-[17px] ${
-                      isActive(item.href) ? "text-[#3b55e6]" : "text-[#1a1d2e]"
+                      isActive(item.href) ? "text-[var(--color-secondary)]" : "text-[var(--color-text-nav)]"
                     }`}
                   >
                     {item.label}

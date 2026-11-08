@@ -12,6 +12,8 @@ import GlimpseRouter from "./router/glimpse.routes.js";
 import PageRouter from "./router/page.routes.js";
 import MediaRouter from "./router/media.routes.js";
 import StatsRouter from "./router/stats.routes.js";
+import ThemeRouter from "./router/theme.routes.js";
+import { ensureDefaultTheme } from "./controller/theme.controller.js";
 import helmet from "helmet";
 import cors, { CorsOptions } from "cors";
 const app = express();
@@ -58,6 +60,7 @@ app.use("/api/v1", GlimpseRouter);
 app.use("/api/v1", PageRouter);
 app.use("/api/v1", MediaRouter);
 app.use("/api/v1", StatsRouter);
+app.use("/api/v1", ThemeRouter);
 
 // Terminal JSON error handler: converts errors forwarded via next(err)
 // (auth middleware, Multer, Passport, body parser, CORS) into the standard
@@ -149,7 +152,15 @@ app.use(
 );
 
 connectToDatabase()
-  .then(() => {
+  .then(async () => {
+    // Seed the default theme before the first request can arrive, but never
+    // let a seeding problem keep the API offline.
+    try {
+      await ensureDefaultTheme();
+    } catch (error) {
+      console.error(`[THEME] Default theme seed failed: ${(error as Error).message}`);
+    }
+
     app.listen(port, () => {
       console.log("Weborium - POO5 is listening on port:", port);
     });

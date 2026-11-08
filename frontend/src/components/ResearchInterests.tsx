@@ -23,7 +23,7 @@ interface ResearchInterestsProps {
 }
 
 const glass =
-    "bg-white bg-[linear-gradient(90deg,rgba(255,255,255,0.02)_0%,rgba(0,0,0,0.02)_47.08%,rgba(255,255,255,0.02)_100%)] " +
+    "bg-[var(--color-surface)] bg-[linear-gradient(90deg,rgba(255,255,255,0.02)_0%,rgba(0,0,0,0.02)_47.08%,rgba(255,255,255,0.02)_100%)] " +
     "shadow-[inset_4px_0_4px_0_rgba(255,255,255,0.25),inset_0_2px_5px_0_rgba(255,255,255,0.54),2px_2px_120px_0_rgba(0,0,0,0.12)]";
 
 const defaultItems: Interest[] = [
@@ -104,7 +104,7 @@ export const ResearchInterests = ({
     return (
         <section className={`w-full px-3 py-12 sm:px-6 lg:px-12 ${className}`}>
             <div className="mx-auto flex max-w-[856px] flex-col items-center gap-9">
-                <h2 className="text-center font-['Google_Sans_Flex',sans-serif] text-[28px] font-medium leading-tight text-[#131A28] sm:text-[32px]">
+                <h2 className="text-center font-['Google_Sans_Flex',sans-serif] text-[28px] font-medium leading-tight text-[var(--color-text-primary)] sm:text-[32px]">
                     {title}
                 </h2>
 
@@ -116,11 +116,11 @@ export const ResearchInterests = ({
                         >
                             <div className="flex flex-col items-start gap-4">
                                 {item.icon}
-                                <h3 className="font-['Google_Sans_Flex',sans-serif] text-2xl font-medium leading-tight text-[#131A28]">
+                                <h3 className="font-['Google_Sans_Flex',sans-serif] text-2xl font-medium leading-tight text-[var(--color-text-primary)]">
                                     {item.title}
                                 </h3>
                             </div>
-                            <p className="max-w-[305px] font-['Google_Sans_Flex',sans-serif] text-base leading-tight text-[#5B6478]">
+                            <p className="max-w-[305px] font-['Google_Sans_Flex',sans-serif] text-base leading-tight text-[var(--color-text-secondary)]">
                                 {item.description}
                             </p>
                         </article>

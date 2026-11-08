@@ -20,7 +20,7 @@ interface AboutSectionProps {
 }
 
 const glass =
-    "bg-white bg-[linear-gradient(90deg,rgba(255,255,255,0.02)_0%,rgba(0,0,0,0.02)_47.08%,rgba(255,255,255,0.02)_100%)] " +
+    "bg-[var(--color-surface)] bg-[linear-gradient(90deg,rgba(255,255,255,0.02)_0%,rgba(0,0,0,0.02)_47.08%,rgba(255,255,255,0.02)_100%)] " +
     "shadow-[inset_4px_0_4px_0_rgba(255,255,255,0.25),inset_0_2px_5px_0_rgba(255,255,255,0.54),2px_2px_120px_0_rgba(0,0,0,0.12)]";
 
 const defaultStats: Stat[] = [
@@ -41,10 +41,10 @@ const defaultDescription =
 
 const StatCard = ({ value, label }: Stat) => (
     <div className={`flex flex-col items-start rounded-[32px] px-6 py-4 ${glass}`}>
-        <span className="font-['Google_Sans_Flex',sans-serif] text-[40px] font-medium leading-none text-[#131A28]">
+        <span className="font-['Google_Sans_Flex',sans-serif] text-[40px] font-medium leading-none text-[var(--color-text-primary)]">
             {value}
         </span>
-        <span className="mt-0 font-['Google_Sans_Flex',sans-serif] text-base font-medium leading-6 text-[#5B6478]">
+        <span className="mt-0 font-['Google_Sans_Flex',sans-serif] text-base font-medium leading-6 text-[var(--color-text-secondary)]">
             {label}
         </span>
     </div>
@@ -89,7 +89,7 @@ export const AboutSection = ({
                 >
                     {/* Left: heading + stats */}
                     <div className="flex flex-col items-start gap-6">
-                        <h2 className="max-w-[332px] font-['Google_Sans_Flex',sans-serif] text-[28px] font-medium leading-tight text-[#131A28] sm:text-[32px]">
+                        <h2 className="max-w-[332px] font-['Google_Sans_Flex',sans-serif] text-[28px] font-medium leading-tight text-[var(--color-text-primary)] sm:text-[32px]">
                             {title}
                         </h2>
                         <div className="flex flex-wrap gap-x-4 gap-y-3">
@@ -101,7 +101,7 @@ export const AboutSection = ({
 
                     {/* Right: bio + CTA */}
                     <div className="flex flex-col items-start gap-6">
-                        <p className="w-full text-justify font-['Google_Sans_Flex',sans-serif] text-base leading-tight text-[#5B6478] sm:text-xl">
+                        <p className="w-full text-justify font-['Google_Sans_Flex',sans-serif] text-base leading-tight text-[var(--color-text-secondary)] sm:text-xl">
                             {bio}
                         </p>
                         <Button
@@ -117,16 +117,16 @@ export const AboutSection = ({
             Top corners are square so its straight side edges run cleanly out from under
             the main card; the main card's shadow (z-10) falls across its top. */}
                 <div
-                    className="relative z-0 mx-9 -mt-12 rounded-b-[36px] rounded-t-none bg-[#FAFAFA] bg-[linear-gradient(90deg,rgba(255,255,255,0.02)_0%,rgba(0,0,0,0.02)_47.08%,rgba(255,255,255,0.02)_100%)] px-6 pb-8 pt-[72px] text-center shadow-[inset_4px_0_4px_0_rgba(255,255,255,0.25),2px_2px_120px_0_rgba(0,0,0,0.12)] sm:mx-12 sm:rounded-b-[48px] lg:mx-[72px] lg:rounded-b-[64px]"
+                    className="relative z-0 mx-9 -mt-12 rounded-b-[36px] rounded-t-none bg-[var(--color-surface-raised)] bg-[linear-gradient(90deg,rgba(255,255,255,0.02)_0%,rgba(0,0,0,0.02)_47.08%,rgba(255,255,255,0.02)_100%)] px-6 pb-8 pt-[72px] text-center shadow-[inset_4px_0_4px_0_rgba(255,255,255,0.25),2px_2px_120px_0_rgba(0,0,0,0.12)] sm:mx-12 sm:rounded-b-[48px] lg:mx-[72px] lg:rounded-b-[64px]"
                 >
-                    <h3 className="font-['Google_Sans_Flex',sans-serif] text-[28px] font-medium leading-tight text-[#131A28] sm:text-[32px]">
+                    <h3 className="font-['Google_Sans_Flex',sans-serif] text-[28px] font-medium leading-tight text-[var(--color-text-primary)] sm:text-[32px]">
                         {latestHeading}
                     </h3>
                     <ul className="mt-3 flex flex-col gap-4">
                         {latest.map((item) => (
                             <li
                                 key={item}
-                                className="font-['Google_Sans_Flex',sans-serif] text-base leading-tight text-[#5B6478] sm:text-xl"
+                                className="font-['Google_Sans_Flex',sans-serif] text-base leading-tight text-[var(--color-text-secondary)] sm:text-xl"
                             >
                                 {item}
                             </li>

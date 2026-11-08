@@ -69,7 +69,10 @@ export const MediaPage = () => {
 
   useEffect(() => {
     const controller = new AbortController();
-    void load(page, controller.signal);
+    // Deferred so no state update happens synchronously in the effect body.
+    queueMicrotask(() => {
+      if (!controller.signal.aborted) void load(page, controller.signal);
+    });
     return () => controller.abort();
   }, [load, page]);
 

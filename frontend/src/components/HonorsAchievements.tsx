@@ -132,14 +132,14 @@ export const HonorsAchievements: React.FC = () => {
         - Mobile: Has the rounded outer card with white background, border, and soft shadow (as in image 2 & 3).
         - Desktop (md+): Smooth blend into page background with wider max width.
       */}
-      <div className="w-full max-w-[420px] md:max-w-4xl bg-white md:bg-transparent rounded-[32px] md:rounded-none p-6 sm:p-8 md:p-0 border border-gray-100/80 md:border-none shadow-[0_10px_35px_-8px_rgba(0,0,0,0.06)] md:shadow-none flex flex-col items-center">
+      <div className="w-full max-w-[420px] md:max-w-4xl bg-[var(--color-surface)] md:bg-transparent rounded-[32px] md:rounded-none p-6 sm:p-8 md:p-0 border border-[var(--color-surface-muted)]/80 md:border-none shadow-[0_10px_35px_-8px_rgba(0,0,0,0.06)] md:shadow-none flex flex-col items-center">
         
         {/* Header: Trophy Icon + Title */}
         <div className="flex flex-col items-center mb-7 sm:mb-8 text-center select-none">
           <div className="mb-3 transition-transform hover:scale-105 duration-200">
             <TrophyIcon className="w-10 h-14 md:w-12 md:h-16" />
           </div>
-          <h2 className="text-[21px] sm:text-[23px] md:text-[25px] font-semibold text-[#1f2937] tracking-tight">
+          <h2 className="text-[21px] sm:text-[23px] md:text-[25px] font-semibold text-[var(--color-text-heading)] tracking-tight">
             Honors &amp; Achievements
           </h2>
         </div>
@@ -153,12 +153,12 @@ export const HonorsAchievements: React.FC = () => {
           {achievementsData.map((item) => (
             <div
               key={item.id}
-              className="bg-white rounded-[22px] px-5 sm:px-6 py-4 sm:py-5 border border-gray-100/80 md:border-gray-100 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_25px_-4px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col justify-center text-left"
+              className="bg-[var(--color-surface)] rounded-[22px] px-5 sm:px-6 py-4 sm:py-5 border border-[var(--color-surface-muted)]/80 md:border-[var(--color-surface-muted)] shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_25px_-4px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col justify-center text-left"
             >
-              <h3 className="text-[19px] sm:text-[20px] md:text-[21px] font-medium text-[#111827] leading-snug tracking-[-0.01em]">
+              <h3 className="text-[19px] sm:text-[20px] md:text-[21px] font-medium text-[var(--color-text-heading)] leading-snug tracking-[-0.01em]">
                 {item.title}
               </h3>
-              <p className="mt-1 text-[13px] sm:text-[13.5px] text-[#6b7280] font-normal leading-relaxed">
+              <p className="mt-1 text-[13px] sm:text-[13.5px] text-[var(--color-text-muted)] font-normal leading-relaxed">
                 {item.description}
               </p>
             </div>

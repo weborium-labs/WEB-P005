@@ -107,6 +107,7 @@ export interface OverviewStats {
   glimpses: number;
   navigation: { navbars: number; subnavbars: number };
   media: number;
+  themes: { total: number; active: number };
   recentlyUpdated: Array<{
     _id: string;
     slug: string;

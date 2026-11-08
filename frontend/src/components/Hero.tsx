@@ -112,7 +112,7 @@ export const Hero = ({
             <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-16">
                 {/* Left: copy + CTAs */}
                 <div className="flex flex-col items-start">
-                    <h1 className="font-['Google_Sans_Flex',sans-serif] text-[40px] font-medium leading-[1.15] tracking-[-0.02em] text-[#131A28] sm:text-[48px] lg:text-[56px]">
+                    <h1 className="font-['Google_Sans_Flex',sans-serif] text-[40px] font-medium leading-[1.15] tracking-[-0.02em] text-[var(--color-text-primary)] sm:text-[48px] lg:text-[56px]">
                         {lines.map((line) => (
                             <span key={line} className="block">
                                 {line}
@@ -120,7 +120,7 @@ export const Hero = ({
                         ))}
                     </h1>
 
-                    <p className="mt-6 max-w-[620px] font-['Google_Sans_Flex',sans-serif] text-[16px] leading-[1.25] text-[#5b6178]">
+                    <p className="mt-6 max-w-[620px] font-['Google_Sans_Flex',sans-serif] text-[16px] leading-[1.25] text-[var(--color-text-hero)]">
                         {text}
                     </p>
 

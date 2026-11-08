@@ -8,6 +8,7 @@ import {
   type ReplacePageInput,
   type UpdatePageInput,
 } from "../schemas/page.schema.js";
+import { PAGE_PATH_PATTERN } from "../schemas/page.schema.js";
 
 /**
  * Page documents are addressed by their stable `_id` (preferred) or their
@@ -43,6 +44,37 @@ const toClientPage = (page: IPage) => ({
 /** Sections keep a deterministic `order` equal to their array position. */
 const normaliseSections = (sections: ISection[]): ISection[] =>
   sections.map((section, index) => ({ ...section, order: index }));
+
+/** Drafts are visible only to admins (never enumerable by the public). */
+const canView = (page: IPage, isAdmin: boolean): boolean =>
+  page.status === "published" || isAdmin;
+
+/**
+ * Turns a browser pathname into a page slug.
+ *
+ * Accepts `%2F`-encoded input, lower-cases it, collapses duplicate slashes and
+ * strips leading/trailing ones. Returns `null` when the path cannot address a
+ * page at all — callers map that to a plain 404 rather than a validation
+ * error, so arbitrary URLs never leak implementation detail.
+ */
+const normalisePath = (raw: string): string | null => {
+  let decoded = raw;
+  try {
+    decoded = decodeURIComponent(raw);
+  } catch {
+    return null;
+  }
+
+  const slug = decoded
+    .toLowerCase()
+    .replace(/\\/g, "/")
+    .replace(/^\/+/, "")
+    .replace(/\/+$/, "")
+    .replace(/\/{2,}/g, "/");
+
+  if (!slug || !PAGE_PATH_PATTERN.test(slug)) return null;
+  return slug;
+};
 
 /** Mongoose duplicate-key errors are surfaced as a friendly 409. */
 const rethrowDuplicateSlug = (error: unknown): never => {
@@ -101,7 +133,7 @@ export const getPage = asyncHandler(async (req: Request, res: Response) => {
   }
 
   const isAdmin = (req as Request & { user?: { role?: string } }).user?.role === "admin";
-  if (page.status !== "published" && !isAdmin) {
+  if (!canView(page, isAdmin)) {
     // Drafts are invisible to the public: report them exactly like a missing
     // page so unpublished work is never leaked or enumerated.
     throw new ApiError(404, "Page not found.");
@@ -115,6 +147,44 @@ export const getPage = asyncHandler(async (req: Request, res: Response) => {
   return res
     .status(200)
     .json(new ApiResponse(200, payload, "Page retrieved successfully."));
+});
+
+// ==========================================
+// 2b. RESOLVE A URL PATH TO A PAGE (public route resolution)
+// ==========================================
+/**
+ * `GET /api/v1/pages/resolve?path=/research/overview`
+ *
+ * The frontend's `App.tsx` sends the current pathname here and renders the
+ * returned document through its section registry — this is what makes a newly
+ * published page reachable at its URL with zero frontend deployment.
+ */
+export const getPageByPath = asyncHandler(async (req: Request, res: Response) => {
+  const { path } = (req as Request & { validatedQuery?: { path?: string } })
+    .validatedQuery ?? (req.query as { path?: string });
+
+  const slug = typeof path === "string" ? normalisePath(path) : null;
+  if (!slug) {
+    // Not a shape a page could ever have — same answer as a missing page.
+    throw new ApiError(404, "Page not found.");
+  }
+
+  const page = await Page.findOne({ slug });
+  if (!page) {
+    throw new ApiError(404, "Page not found.");
+  }
+
+  const isAdmin = (req as Request & { user?: { role?: string } }).user?.role === "admin";
+  if (!canView(page, isAdmin)) {
+    throw new ApiError(404, "Page not found.");
+  }
+
+  const payload = toClientPage(page);
+  payload.content.sections = [...payload.content.sections].sort((a, b) => a.order - b.order);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, payload, "Page resolved successfully."));
 });
 
 // ==========================================

@@ -3,6 +3,7 @@ import {
   createPage,
   deletePage,
   getPage,
+  getPageByPath,
   listPages,
   replacePage,
   updatePage,
@@ -13,10 +14,11 @@ import {
   createPageSchema,
   listPagesQuerySchema,
   replacePageSchema,
+  resolvePageQuerySchema,
   updatePageSchema,
 } from "../schemas/page.schema.js";
 
-const router = Router();
+const router: Router = Router();
 
 // Admin listing — every status, so drafts are manageable.
 router.get(
@@ -24,6 +26,15 @@ router.get(
   verifyAdmin,
   validateQuery(listPagesQuerySchema),
   listPages,
+);
+
+// Public route resolution — MUST precede `/pages/:idOrSlug` so the literal
+// `resolve` segment is never swallowed by the parameterised route.
+router.get(
+  "/pages/resolve",
+  validateQuery(resolvePageQuerySchema),
+  optionalAuth,
+  getPageByPath,
 );
 
 // Public read (drafts visible only to admins). Runs before the admin-only

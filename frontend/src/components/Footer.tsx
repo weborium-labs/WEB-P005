@@ -112,29 +112,29 @@ export const Footer: React.FC<FooterProps> = ({ pageSlug }) => {
   return (
     <footer className="w-full px-3 py-6 sm:px-6 lg:px-12 bg-transparent select-none">
       {/* Outer Card with subtle hover lift */}
-      <div className="mx-auto max-w-7xl rounded-[28px] sm:rounded-[36px] md:rounded-[44px] bg-white p-6 sm:p-10 lg:p-14 border border-[#E5E7EB] shadow-sm transition-all duration-300 hover:shadow-md hover:border-[#D1D5DB]">
+      <div className="mx-auto max-w-7xl rounded-[28px] sm:rounded-[36px] md:rounded-[44px] bg-[var(--color-surface)] p-6 sm:p-10 lg:p-14 border border-[var(--color-border)] shadow-sm transition-all duration-300 hover:shadow-md hover:border-[var(--color-border-strong)]">
         
         {/* Main Content Area */}
         <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-8 lg:gap-12">
           
           {/* Left: Bio & Heading */}
           <div className="max-w-md group">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight leading-tight transition-colors duration-200 group-hover:text-black">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text-heading)] tracking-tight leading-tight transition-colors duration-200 group-hover:text-[var(--color-text-primary)]">
               {name}
             </h2>
-            <p className="mt-2.5 text-xs sm:text-sm text-[#4B5563] leading-relaxed font-normal">
+            <p className="mt-2.5 text-xs sm:text-sm text-[var(--color-text-subtle)] leading-relaxed font-normal">
               {role}
             </p>
           </div>
 
           {/* Divider visible on mobile/tablet */}
-          <div className="block lg:hidden w-full h-[1px] bg-[#D1D5DB]" />
+          <div className="block lg:hidden w-full h-[1px] bg-[var(--color-border-strong)]" />
 
           {/* Right: Navigation Links Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:flex lg:flex-row gap-6 sm:gap-8 lg:gap-14">
             {sections.map((section) => (
               <div key={section.title} className="flex flex-col space-y-2.5 min-w-[120px]">
-                <span className="text-xs sm:text-sm font-semibold tracking-wider uppercase text-[#6B7280]">
+                <span className="text-xs sm:text-sm font-semibold tracking-wider uppercase text-[var(--color-text-muted)]">
                   {section.title}
                 </span>
 
@@ -146,7 +146,7 @@ export const Footer: React.FC<FooterProps> = ({ pageSlug }) => {
                           href={link.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="group relative inline-flex items-center text-xs sm:text-sm font-medium text-[#374151] hover:text-black transition-all duration-200 hover:translate-x-1"
+                          className="group relative inline-flex items-center text-xs sm:text-sm font-medium text-[var(--color-text-body)] hover:text-[var(--color-text-primary)] transition-all duration-200 hover:translate-x-1"
                         >
                           <span className="relative">
                             {link.label}
@@ -161,7 +161,7 @@ export const Footer: React.FC<FooterProps> = ({ pageSlug }) => {
                       ) : (
                         <Link
                           to={link.href}
-                          className="group relative inline-block text-xs sm:text-sm font-medium text-[#374151] hover:text-black transition-all duration-200 hover:translate-x-1"
+                          className="group relative inline-block text-xs sm:text-sm font-medium text-[var(--color-text-body)] hover:text-[var(--color-text-primary)] transition-all duration-200 hover:translate-x-1"
                         >
                           <span className="relative">
                             {link.label}
@@ -180,14 +180,14 @@ export const Footer: React.FC<FooterProps> = ({ pageSlug }) => {
         </div>
 
         {/* Horizontal Divider Line */}
-        <div className="mt-10 sm:mt-12 lg:mt-14 w-full h-[1px] bg-[#D1D5DB]" />
+        <div className="mt-10 sm:mt-12 lg:mt-14 w-full h-[1px] bg-[var(--color-border-strong)]" />
 
         {/* Bottom Bar / Copyright */}
-        <div className="mt-4 flex flex-row items-center justify-between text-[11px] sm:text-xs text-[#6B7280]">
-          <span className="transition-colors duration-150 hover:text-gray-900">
+        <div className="mt-4 flex flex-row items-center justify-between text-[11px] sm:text-xs text-[var(--color-text-muted)]">
+          <span className="transition-colors duration-150 hover:text-[var(--color-text-heading)]">
             {updated}
           </span>
-          <span className="transition-colors duration-150 hover:text-gray-900">
+          <span className="transition-colors duration-150 hover:text-[var(--color-text-heading)]">
             {copyright}
           </span>
         </div>

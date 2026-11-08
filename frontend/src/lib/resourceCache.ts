@@ -84,6 +84,16 @@ export class ResourceCache<T> {
   }
 
   /**
+   * Seeds the cache with a value fetched elsewhere, so a resource that is
+   * already in hand (e.g. a page resolved by path) is not fetched again by
+   * every component that reads it by slug.
+   */
+  prime(key: string, value: T): void {
+    this.entries.set(key, { value, fetchedAt: Date.now() });
+    this.failures.delete(key);
+  }
+
+  /**
    * Loads a key, de-duplicating concurrent callers onto a single request.
    *
    * - joins an in-flight request when there is one;

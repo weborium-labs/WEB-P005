@@ -37,10 +37,10 @@ export const ContactSection = ({
         <section className={`w-full px-4 py-16 sm:px-6 lg:py-24 ${className}`}>
             <div className="mx-auto flex w-full max-w-[742px] flex-col items-center gap-8">
                 <div className="flex w-full flex-col items-start gap-4">
-                    <h2 className="w-full text-balance text-center font-['Google_Sans_Flex',sans-serif] text-[32px] font-medium leading-[1.3] text-[#131A28] sm:text-[44px] lg:text-[54px]">
+                    <h2 className="w-full text-balance text-center font-['Google_Sans_Flex',sans-serif] text-[32px] font-medium leading-[1.3] text-[var(--color-text-primary)] sm:text-[44px] lg:text-[54px]">
                         {title}
                     </h2>
-                    <p className="w-full text-center font-['Google_Sans_Flex',sans-serif] text-base leading-tight text-[#5B6478]">
+                    <p className="w-full text-center font-['Google_Sans_Flex',sans-serif] text-base leading-tight text-[var(--color-text-secondary)]">
                         {text}
                     </p>
                 </div>

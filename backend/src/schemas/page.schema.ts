@@ -12,6 +12,15 @@ import { SECTION_TYPES } from "../models/page.model.js";
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
+/**
+ * Page URLs are slash-separated slug segments: `about`, `publications`, but
+ * also nested addresses such as `research/overview`. 1–5 segments keeps a page
+ * from swallowing the whole URL space while still letting admins configure
+ * real nested URLs.
+ */
+export const PAGE_PATH_PATTERN =
+  /^[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*){0,4}$/;
+
 const isHttpUrl = (value: string): boolean => {
   try {
     const url = new URL(value);
@@ -45,8 +54,11 @@ export const absoluteUrlSchema = z
 const slugSchema = z
   .string()
   .min(1)
-  .max(100)
-  .regex(SLUG_PATTERN, "Slug may only contain lowercase letters, numbers and hyphens.");
+  .max(160)
+  .regex(
+    PAGE_PATH_PATTERN,
+    "Slug may only contain lowercase letters, numbers, hyphens and single slashes between segments (e.g. `about` or `research/overview`).",
+  );
 
 const imageSchema = z.object({
   url: absoluteUrlSchema,
@@ -152,6 +164,16 @@ export const updatePageSchema = replacePageSchema.partial().refine(
 /** GET /api/v1/pages — admin listing filter. */
 export const listPagesQuerySchema = z.object({
   status: pageStatusSchema.optional(),
+});
+
+/**
+ * GET /api/v1/pages/resolve?path=/about — public route resolution.
+ *
+ * The value is validated for shape only; the controller normalises it
+ * (decode, lowercase, trim slashes) before looking the document up.
+ */
+export const resolvePageQuerySchema = z.object({
+  path: z.string().min(1, "path is required.").max(300),
 });
 
 export type CreatePageInput = z.infer<typeof createPageSchema>;

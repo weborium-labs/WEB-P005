@@ -115,7 +115,7 @@ export const EditorialBoardPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#FDFDFD] flex flex-col justify-between font-['IBM_Plex_Sans',sans-serif] selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen bg-[var(--color-background)] flex flex-col justify-between font-['IBM_Plex_Sans',sans-serif] selection:bg-[var(--color-primary-light)] selection:text-[var(--color-text-primary)]">
       
       {/* 1. Header Navigation */}
       <Navbar />
@@ -125,7 +125,7 @@ export const EditorialBoardPage: React.FC = () => {
         
         {/* Title Header */}
         <div className="pb-8 sm:pb-12 text-left">
-          <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-bold text-[#111827] tracking-tight leading-tight">
+          <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-bold text-[var(--color-text-heading)] tracking-tight leading-tight">
             {pageHeading ?? "Editorial Board Memberships"}
           </h1>
         </div>
@@ -136,9 +136,9 @@ export const EditorialBoardPage: React.FC = () => {
             {[1, 2].map((i) => (
               <div
                 key={i}
-                className="w-full h-[68px] sm:h-[72px] rounded-[24px] sm:rounded-[36px] bg-white border border-[#E5E7EB] animate-pulse px-6 sm:px-8 flex items-center"
+                className="w-full h-[68px] sm:h-[72px] rounded-[24px] sm:rounded-[36px] bg-[var(--color-surface)] border border-[var(--color-border)] animate-pulse px-6 sm:px-8 flex items-center"
               >
-                <div className="h-4 w-3/4 bg-gray-200 rounded-full" />
+                <div className="h-4 w-3/4 bg-[var(--color-border)] rounded-full" />
               </div>
             ))}
           </div>
@@ -146,7 +146,7 @@ export const EditorialBoardPage: React.FC = () => {
           <div className="space-y-4 sm:space-y-5">
             {items.map((item) => {
               const Content = (
-                <p className="text-[14px] sm:text-[15.5px] font-normal text-[#1E293B] leading-relaxed">
+                <p className="text-[14px] sm:text-[15.5px] font-normal text-[var(--color-text-primary)] leading-relaxed">
                   {item.title}
                 </p>
               );
@@ -157,14 +157,14 @@ export const EditorialBoardPage: React.FC = () => {
                   href={item.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center bg-white hover:bg-[#FAFCFF] border border-[#E5E7EB] hover:border-[#CBD5E1] px-6 sm:px-8 py-4 sm:py-5 rounded-[22px] sm:rounded-[36px] shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:shadow-md transition-all duration-200"
+                  className="flex items-center bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] hover:border-[var(--color-border-soft)] px-6 sm:px-8 py-4 sm:py-5 rounded-[22px] sm:rounded-[36px] shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:shadow-md transition-all duration-200"
                 >
                   {Content}
                 </a>
               ) : (
                 <div
                   key={item.id}
-                  className="flex items-center bg-white border border-[#E5E7EB] px-6 sm:px-8 py-4 sm:py-5 rounded-[22px] sm:rounded-[36px] shadow-[0_2px_10px_rgba(0,0,0,0.02)] transition-all duration-200"
+                  className="flex items-center bg-[var(--color-surface)] border border-[var(--color-border)] px-6 sm:px-8 py-4 sm:py-5 rounded-[22px] sm:rounded-[36px] shadow-[0_2px_10px_rgba(0,0,0,0.02)] transition-all duration-200"
                 >
                   {Content}
                 </div>

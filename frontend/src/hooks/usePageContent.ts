@@ -39,6 +39,15 @@ export const invalidatePageCache = (slug?: string): void => {
   pageCache.invalidate(slug);
 };
 
+/**
+ * Seeds the slug cache with a document that was fetched through another
+ * endpoint (`GET /pages/resolve?path=…`), so the section components mounted
+ * for that page resolve instantly instead of issuing a second request.
+ */
+export const primePageCache = (page: PageDocument): void => {
+  pageCache.prime(page.slug, page);
+};
+
 interface PageSnapshot {
   slug: string | undefined;
   page: PageDocument | null;

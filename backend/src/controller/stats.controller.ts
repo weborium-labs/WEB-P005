@@ -7,6 +7,7 @@ import { Glimpse } from "../models/glimpse.model.js";
 import { NavbarItem } from "../models/navbar_item.model.js";
 import SubNavItem from "../models/sub_nav_item.model.js";
 import { Media } from "../models/media.model.js";
+import { Theme } from "../models/theme.model.js";
 
 /**
  * Dashboard overview.
@@ -25,6 +26,8 @@ export const getOverview = asyncHandler(async (_req: Request, res: Response) => 
     navbarCount,
     subNavCount,
     mediaCount,
+    themeCount,
+    activeThemeCount,
     recentlyUpdated,
   ] = await Promise.all([
     Page.countDocuments(),
@@ -35,6 +38,8 @@ export const getOverview = asyncHandler(async (_req: Request, res: Response) => 
     NavbarItem.countDocuments(),
     SubNavItem.countDocuments(),
     Media.countDocuments(),
+    Theme.countDocuments(),
+    Theme.countDocuments({ isActive: true }),
     Page.find()
       .select("slug title status version updatedAt")
       .sort({ updatedAt: -1 })
@@ -58,6 +63,10 @@ export const getOverview = asyncHandler(async (_req: Request, res: Response) => 
           subnavbars: subNavCount,
         },
         media: mediaCount,
+        themes: {
+          total: themeCount,
+          active: activeThemeCount,
+        },
         recentlyUpdated: recentlyUpdated.map((page) => ({
           _id: String(page._id),
           slug: page.slug,

@@ -1,1 +1,64 @@
 @import "tailwindcss";
+
+/*
+ * Design tokens (theme layer).
+ *
+ * Every colour the public site renders with is expressed as a CSS custom
+ * property below. The defaults are byte-for-byte the original palette, so the
+ * site looks correct before (and without) any API response — no flash of
+ * incorrect colours. `frontend/src/theme/applyTheme.ts` overrides these
+ * properties on <html> with the active theme fetched from
+ * `GET /api/v1/themes/active`.
+ *
+ * Keep in sync with `backend/src/models/theme.model.ts` (DEFAULT_THEME_TOKENS)
+ * and `frontend/src/theme/tokens.ts`.
+ */
+:root {
+  /* Brand */
+  --color-primary: #2f55f0;
+  --color-primary-deep: #4560f0;
+  --color-primary-strong: #2f4fe6;
+  --color-primary-soft: #5a7cfb;
+  --color-primary-light: #88c7ff;
+  --color-primary-glow: #7b97ff;
+  --color-secondary: #3b55e6;
+  --color-accent: #3b66f5;
+  --color-accent-strong: #3b82f6;
+  --color-accent-soft: #8ec5fc;
+
+  /* Surfaces */
+  --color-background: #fdfdfd;
+  --color-background-alt: #fbfbfb;
+  --color-surface: #ffffff;
+  --color-surface-raised: #f9fafb;
+  --color-surface-hover: #fafcff;
+  --color-surface-muted: #f3f4f6;
+  --color-surface-soft: #e9ecf2;
+  --color-surface-soft-hover: #e1e5ec;
+  --color-surface-pill: #eceff3;
+
+  /* Borders */
+  --color-border: #e5e7eb;
+  --color-border-strong: #d1d5db;
+  --color-border-soft: #cbd5e1;
+  --color-border-muted: #f0f2f5;
+  --color-border-faint: #efefef;
+
+  /* Text */
+  --color-text-primary: #131a28;
+  --color-text-heading: #111827;
+  --color-text-body: #374151;
+  --color-text-subtle: #4b5563;
+  --color-text-secondary: #5b6478;
+  --color-text-hero: #5b6178;
+  --color-text-muted: #6b7280;
+  --color-text-faint: #9ca3af;
+  --color-text-nav: #1a1d2e;
+  --color-text-on-primary: #ffffff;
+  --color-icon-strong: #0f172a;
+
+  /* Effects */
+  --color-focus-ring: rgba(47, 79, 230, 0.5);
+  --color-shadow-primary: rgba(47, 79, 230, 0.28);
+  --color-glow-accent: rgba(59, 102, 245, 0.7);
+}

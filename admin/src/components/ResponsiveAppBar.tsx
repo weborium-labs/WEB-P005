@@ -29,6 +29,7 @@ const pages = [
     { label: 'Publications', path: '/dashboard/publications' },
     { label: 'Glimpses', path: '/dashboard/glimpses' },
     { label: 'Media', path: '/dashboard/media' },
+    { label: 'Themes', path: '/dashboard/themes' },
 ];
 
 interface Props {

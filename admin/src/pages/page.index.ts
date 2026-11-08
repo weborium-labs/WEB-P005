@@ -7,8 +7,10 @@ import GlimpsesPage from "./GlimpsesPage";
 import PagesPage from "./PagesPage";
 import PageEditorPage from "./PageEditorPage";
 import MediaPage from "./MediaPage";
+import ThemesPage from "./ThemesPage";
 
 export {
+  ThemesPage,
   SignIn,
   AdminLanding,
   Dashboard,

@@ -24,7 +24,8 @@ import {
 } from "@mui/icons-material";
 import { deletePage, getPage, replacePage } from "../api/page.api";
 import { isRequestCanceled, normalizeApiError } from "../api/apiClient";
-import SectionEditor, { SECTION_CONFIG } from "../components/SectionEditor";
+import SectionEditor from "../components/SectionEditor";
+import { SECTION_CONFIG } from "../components/sectionConfig";
 import ConfirmDialog from "../components/ConfirmDialog";
 import FeedbackSnackbar, { type Feedback } from "../components/FeedbackSnackbar";
 import { SECTION_TYPES, type Page, type Section, type SectionType } from "../types/page";
@@ -86,7 +87,11 @@ export const PageEditorPage = () => {
   const [discardOpen, setDiscardOpen] = useState(false);
 
   const pendingNavRef = useRef<string | null>(null);
-  const savedSnapshotRef = useRef<string>("");
+  /**
+   * Serialised snapshot of the last saved (or loaded) document. Kept in state
+   * rather than a ref so `dirty` can be derived during render.
+   */
+  const [savedSnapshot, setSavedSnapshot] = useState("");
 
   const load = useCallback(
     async (signal?: AbortSignal) => {
@@ -99,7 +104,7 @@ export const PageEditorPage = () => {
         const nextDraft = toDraft(data);
         setPage(data);
         setDraft(nextDraft);
-        savedSnapshotRef.current = JSON.stringify(nextDraft);
+        setSavedSnapshot(JSON.stringify(nextDraft));
         setErrors({});
         setConflict(false);
       } catch (err) {
@@ -114,13 +119,16 @@ export const PageEditorPage = () => {
 
   useEffect(() => {
     const controller = new AbortController();
-    void load(controller.signal);
+    // Deferred so no state update happens synchronously in the effect body.
+    queueMicrotask(() => {
+      if (!controller.signal.aborted) void load(controller.signal);
+    });
     return () => controller.abort();
   }, [load]);
 
   const dirty = useMemo(
-    () => Boolean(draft) && JSON.stringify(draft) !== savedSnapshotRef.current,
-    [draft],
+    () => Boolean(draft) && JSON.stringify(draft) !== savedSnapshot,
+    [draft, savedSnapshot],
   );
 
   // Warn before a refresh/close while the document has unsaved edits.
@@ -182,7 +190,7 @@ export const PageEditorPage = () => {
       const nextDraft = toDraft(saved);
       setPage(saved);
       setDraft(nextDraft);
-      savedSnapshotRef.current = JSON.stringify(nextDraft);
+      setSavedSnapshot(JSON.stringify(nextDraft));
       setFeedback({ severity: "success", message: "Page saved." });
     } catch (err) {
       const normalized = normalizeApiError(err);
@@ -208,7 +216,7 @@ export const PageEditorPage = () => {
     if (!page) return;
     const restored = toDraft(page);
     setDraft(restored);
-    savedSnapshotRef.current = JSON.stringify(restored);
+    setSavedSnapshot(JSON.stringify(restored));
     setErrors({});
     setConflict(false);
     setDiscardOpen(false);
