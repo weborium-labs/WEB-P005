@@ -118,7 +118,7 @@ export const Footer: React.FC<FooterProps> = ({ pageSlug }) => {
         <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-8 lg:gap-12">
           
           {/* Left: Bio & Heading */}
-          <div className="max-w-md group">
+          <div data-reveal className="max-w-md group">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text-heading)] tracking-tight leading-tight transition-colors duration-200 group-hover:text-[var(--color-text-primary)]">
               {name}
             </h2>
@@ -133,7 +133,7 @@ export const Footer: React.FC<FooterProps> = ({ pageSlug }) => {
           {/* Right: Navigation Links Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:flex lg:flex-row gap-6 sm:gap-8 lg:gap-14">
             {sections.map((section) => (
-              <div key={section.title} className="flex flex-col space-y-2.5 min-w-[120px]">
+              <div key={section.title} data-reveal className="flex flex-col space-y-2.5 min-w-[120px]">
                 <span className="text-xs sm:text-sm font-semibold tracking-wider uppercase text-[var(--color-text-muted)]">
                   {section.title}
                 </span>

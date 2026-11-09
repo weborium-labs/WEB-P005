@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Button from "./Button";
 import apiClient from "../api/apiClient";
 import { usePageSection } from "../hooks/usePageContent";
+import { gsap, inMotionContext } from "../lib/animations";
 
 interface NavChild {
   id?: string;
@@ -248,6 +249,21 @@ const Navbar = ({
     window.addEventListener("resize", measure);
     return () => window.removeEventListener("resize", measure);
   }, [openDropdown, navItems]);
+
+  // Entrance: the bar settles in once on mount (no scroll dependency — it is
+  // fixed chrome). Reverted on unmount; skipped entirely for reduced motion.
+  useEffect(() => {
+    const context = inMotionContext(() => {
+      gsap.from(navRef.current, {
+        y: -18,
+        opacity: 0,
+        duration: 0.6,
+        ease: "power2.out",
+        clearProps: "transform,opacity",
+      });
+    }, navRef.current);
+    return () => context?.revert();
+  }, []);
 
   const isActive = (href: string) =>
     href === "/" ? activePath === "/" : activePath.startsWith(href);

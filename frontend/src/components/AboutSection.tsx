@@ -40,7 +40,7 @@ const defaultDescription =
     'Dr. Davinder Paul Singh is currently working as an Assistant Professor in the Department of Computer Science and Engineering at Pandit Deendayal Energy University, Gandhinagar, Gujarat. He has completed his Ph.D. from Shri Mata Vaishno Devi University, Katra, Jammu and Kashmir. He has also qualified UGC- NET JRF in computer science with All India Rank 100. He has published various articles in SCI journals and International Conferences of repute. Dr. Davinder Paul Singh has also won several best paper presentation awards including "Best Paper Award" for his CSI article. His primary areas of interest include Artificial Intelligence, Machine Learning, Deep Learning, Computational Biology and Drug Discovery.';
 
 const StatCard = ({ value, label }: Stat) => (
-    <div className={`flex flex-col items-start rounded-[32px] px-6 py-4 ${glass}`}>
+    <div data-reveal className={`flex flex-col items-start rounded-[32px] px-6 py-4 ${glass}`}>
         <span className="font-['Google_Sans_Flex',sans-serif] text-[40px] font-medium leading-none text-[var(--color-text-primary)]">
             {value}
         </span>
@@ -89,7 +89,10 @@ export const AboutSection = ({
                 >
                     {/* Left: heading + stats */}
                     <div className="flex flex-col items-start gap-6">
-                        <h2 className="max-w-[332px] font-['Google_Sans_Flex',sans-serif] text-[28px] font-medium leading-tight text-[var(--color-text-primary)] sm:text-[32px]">
+                        <h2
+                            data-reveal
+                            className="max-w-[332px] font-['Google_Sans_Flex',sans-serif] text-[28px] font-medium leading-tight text-[var(--color-text-primary)] sm:text-[32px]"
+                        >
                             {title}
                         </h2>
                         <div className="flex flex-wrap gap-x-4 gap-y-3">
@@ -100,7 +103,7 @@ export const AboutSection = ({
                     </div>
 
                     {/* Right: bio + CTA */}
-                    <div className="flex flex-col items-start gap-6">
+                    <div data-reveal className="flex flex-col items-start gap-6">
                         <p className="w-full text-justify font-['Google_Sans_Flex',sans-serif] text-base leading-tight text-[var(--color-text-secondary)] sm:text-xl">
                             {bio}
                         </p>
@@ -117,6 +120,7 @@ export const AboutSection = ({
             Top corners are square so its straight side edges run cleanly out from under
             the main card; the main card's shadow (z-10) falls across its top. */}
                 <div
+                    data-reveal
                     className="relative z-0 mx-9 -mt-12 rounded-b-[36px] rounded-t-none bg-[var(--color-surface-raised)] bg-[linear-gradient(90deg,rgba(255,255,255,0.02)_0%,rgba(0,0,0,0.02)_47.08%,rgba(255,255,255,0.02)_100%)] px-6 pb-8 pt-[72px] text-center shadow-[inset_4px_0_4px_0_rgba(255,255,255,0.25),2px_2px_120px_0_rgba(0,0,0,0.12)] sm:mx-12 sm:rounded-b-[48px] lg:mx-[72px] lg:rounded-b-[64px]"
                 >
                     <h3 className="font-['Google_Sans_Flex',sans-serif] text-[28px] font-medium leading-tight text-[var(--color-text-primary)] sm:text-[32px]">

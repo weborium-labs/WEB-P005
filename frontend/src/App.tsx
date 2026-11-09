@@ -15,6 +15,7 @@ import PatentsPage from "./pages/PatentsPage";
 import ContactPage from "./pages/ContactPage";
 import CmsRoute from "./pages/CmsRoute";
 import { useTheme } from "./hooks/useTheme";
+import { useScrollReveal } from "./hooks/useScrollReveal";
 
 function App() {
   const location = useLocation();
@@ -22,6 +23,10 @@ function App() {
   // Active theme (DB-backed colour tokens) — applied as CSS custom properties
   // on <html>; the built-in :root defaults render identically until it lands.
   useTheme(location.pathname);
+
+  // GSAP scroll reveals — re-armed on every navigation so each route gets a
+  // fresh set of triggers (and the previous route's are reverted).
+  useScrollReveal(location.pathname);
 
   return (
     <Routes>

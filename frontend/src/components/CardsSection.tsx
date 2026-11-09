@@ -43,12 +43,18 @@ const CardsSection = ({ pageSlug, sectionKey }: CardsSectionProps) => {
   return (
     <section className="mx-auto w-full max-w-[1280px] px-4 sm:px-8 lg:px-12 py-10 sm:py-14">
       {heading && (
-        <h2 className="text-xl sm:text-2xl lg:text-[26px] font-bold text-[var(--color-text-heading)] tracking-tight">
+        <h2
+          data-reveal
+          className="text-xl sm:text-2xl lg:text-[26px] font-bold text-[var(--color-text-heading)] tracking-tight"
+        >
           {heading}
         </h2>
       )}
       {description && (
-        <p className="mt-3 max-w-3xl text-[15px] leading-relaxed text-[var(--color-text-subtle)]">
+        <p
+          data-reveal
+          className="mt-3 max-w-3xl text-[15px] leading-relaxed text-[var(--color-text-subtle)]"
+        >
           {description}
         </p>
       )}
@@ -94,6 +100,7 @@ const CardsSection = ({ pageSlug, sectionKey }: CardsSectionProps) => {
             <a
               key={key}
               href={href}
+              data-reveal
               {...(href.startsWith("http")
                 ? { target: "_blank", rel: "noopener noreferrer" }
                 : {})}
@@ -102,7 +109,7 @@ const CardsSection = ({ pageSlug, sectionKey }: CardsSectionProps) => {
               {content}
             </a>
           ) : (
-            <div key={key} className={cardClasses}>
+            <div key={key} data-reveal className={cardClasses}>
               {content}
             </div>
           );

@@ -36,7 +36,7 @@ export const ContactSection = ({
     return (
         <section className={`w-full px-4 py-16 sm:px-6 lg:py-24 ${className}`}>
             <div className="mx-auto flex w-full max-w-[742px] flex-col items-center gap-8">
-                <div className="flex w-full flex-col items-start gap-4">
+                <div data-reveal className="flex w-full flex-col items-start gap-4">
                     <h2 className="w-full text-balance text-center font-['Google_Sans_Flex',sans-serif] text-[32px] font-medium leading-[1.3] text-[var(--color-text-primary)] sm:text-[44px] lg:text-[54px]">
                         {title}
                     </h2>
@@ -44,7 +44,9 @@ export const ContactSection = ({
                         {text}
                     </p>
                 </div>
-                <Button variant="accent" text={link.label} href={link.href} />
+                <div data-reveal className="flex w-full justify-center">
+                    <Button variant="accent" text={link.label} href={link.href} />
+                </div>
             </div>
         </section>
     );

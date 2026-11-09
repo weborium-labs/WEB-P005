@@ -104,7 +104,10 @@ export const ResearchInterests = ({
     return (
         <section className={`w-full px-3 py-12 sm:px-6 lg:px-12 ${className}`}>
             <div className="mx-auto flex max-w-[856px] flex-col items-center gap-9">
-                <h2 className="text-center font-['Google_Sans_Flex',sans-serif] text-[28px] font-medium leading-tight text-[var(--color-text-primary)] sm:text-[32px]">
+                <h2
+                    data-reveal
+                    className="text-center font-['Google_Sans_Flex',sans-serif] text-[28px] font-medium leading-tight text-[var(--color-text-primary)] sm:text-[32px]"
+                >
                     {title}
                 </h2>
 
@@ -112,6 +115,7 @@ export const ResearchInterests = ({
                     {cards.map((item) => (
                         <article
                             key={item.title}
+                            data-reveal
                             className={`flex flex-col items-start gap-3 overflow-hidden rounded-[36px] p-6 sm:rounded-[48px] sm:p-8 lg:rounded-[64px] lg:px-12 lg:py-10 ${glass}`}
                         >
                             <div className="flex flex-col items-start gap-4">

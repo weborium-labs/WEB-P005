@@ -33,6 +33,7 @@ const TextSection = ({ pageSlug, sectionKey }: TextSectionProps) => {
   return (
     <section className="mx-auto w-full max-w-[1280px] px-4 sm:px-8 lg:px-12 pt-24 sm:pt-32 pb-6">
       <div
+        data-reveal
         className={
           section.image?.url
             ? "flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between"
@@ -91,6 +92,7 @@ const TextSection = ({ pageSlug, sectionKey }: TextSectionProps) => {
 
         {section.image?.url && (
           <img
+            data-reveal
             src={section.image.url}
             alt={section.image.alt?.trim() || heading || ""}
             className="w-full max-w-[420px] shrink-0 rounded-[36px] border border-[var(--color-border)] object-cover lg:w-[380px]"

@@ -1,8 +1,9 @@
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import Button from "./Button";
 import SocialPill from "./SocialPill";
 import { GoogleScholarIcon, LinkedInIcon, PdfIcon } from "./Icons";
 import { usePageSection } from "../hooks/usePageContent";
+import { gsap, inMotionContext, prefersReducedMotion } from "../lib/animations";
 import type { SectionItem } from "../types/page";
 
 // Same image the Navbar uses for its avatar
@@ -88,6 +89,21 @@ export const Hero = ({
     className = "",
 }: HeroProps) => {
     const resolved = usePageSection(pageSlug, "hero");
+    const rootRef = useRef<HTMLElement | null>(null);
+
+    // Entrance: headline lines rise in sequence, then copy, actions and finally
+    // the portrait — one composed, formal introduction on first load.
+    useEffect(() => {
+        if (prefersReducedMotion() || !rootRef.current) return;
+        const context = inMotionContext(() => {
+            gsap.timeline()
+                .from("[data-hero-line]", { y: 40, opacity: 0, duration: 0.8, stagger: 0.12, ease: "power3.out" })
+                .from("[data-hero-copy]", { y: 22, opacity: 0, duration: 0.6, ease: "power3.out" }, "-=0.45")
+                .from("[data-hero-actions]", { y: 18, opacity: 0, duration: 0.55, ease: "power3.out" }, "-=0.4")
+                .from("[data-hero-media]", { y: 26, scale: 0.98, opacity: 0, duration: 0.9, ease: "power3.out" }, "-=0.8");
+        }, rootRef.current);
+        return () => context?.revert();
+    }, []);
 
     // The admin removed (or hid) the hero: render nothing instead of stale copy.
     if (resolved.outcome === "hidden") return null;
@@ -107,6 +123,7 @@ export const Hero = ({
 
     return (
         <section
+            ref={rootRef}
             className={`w-full px-3 pt-28 pb-12 sm:px-6 sm:pt-36 lg:px-12 ${className}`}
         >
             <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-16">
@@ -114,17 +131,23 @@ export const Hero = ({
                 <div className="flex flex-col items-start">
                     <h1 className="font-['Google_Sans_Flex',sans-serif] text-[40px] font-medium leading-[1.15] tracking-[-0.02em] text-[var(--color-text-primary)] sm:text-[48px] lg:text-[56px]">
                         {lines.map((line) => (
-                            <span key={line} className="block">
+                            <span key={line} data-hero-line className="block">
                                 {line}
                             </span>
                         ))}
                     </h1>
 
-                    <p className="mt-6 max-w-[620px] font-['Google_Sans_Flex',sans-serif] text-[16px] leading-[1.25] text-[var(--color-text-hero)]">
+                    <p
+                        data-hero-copy
+                        className="mt-6 max-w-[620px] font-['Google_Sans_Flex',sans-serif] text-[16px] leading-[1.25] text-[var(--color-text-hero)]"
+                    >
                         {text}
                     </p>
 
-                    <div className="mt-8 flex flex-wrap items-center gap-4 sm:gap-8">
+                    <div
+                        data-hero-actions
+                        className="mt-8 flex flex-wrap items-center gap-4 sm:gap-8"
+                    >
                         <Button
                             variant="accent"
                             text={primary.label}
@@ -141,7 +164,10 @@ export const Hero = ({
                 </div>
 
                 {/* Right: photo + social pills */}
-                <div className="mx-auto flex w-full max-w-[400px] flex-col items-center gap-6 lg:mx-0">
+                <div
+                    data-hero-media
+                    className="mx-auto flex w-full max-w-[400px] flex-col items-center gap-6 lg:mx-0"
+                >
                     <img
                         src={image}
                         alt={alt}

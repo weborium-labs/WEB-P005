@@ -43,7 +43,10 @@ export const Honors = ({
             >
                 <TrophyIcon />
 
-                <h2 className="mt-4 text-center font-['Google_Sans_Flex',sans-serif] text-[28px] font-medium leading-tight text-[var(--color-text-primary)] sm:text-[32px]">
+                <h2
+                    data-reveal
+                    className="mt-4 text-center font-['Google_Sans_Flex',sans-serif] text-[28px] font-medium leading-tight text-[var(--color-text-primary)] sm:text-[32px]"
+                >
                     {heading}
                 </h2>
 
@@ -51,6 +54,7 @@ export const Honors = ({
                     {items.map((item) => (
                         <li
                             key={item.title}
+                            data-reveal
                             className={`flex flex-col items-start rounded-[32px] px-6 py-4 ${glass}`}
                         >
                             <span className="font-['Google_Sans_Flex',sans-serif] text-[28px] font-medium leading-[1.15] text-[var(--color-text-primary)] sm:text-[32px] lg:text-[40px]">

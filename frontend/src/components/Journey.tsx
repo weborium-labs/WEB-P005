@@ -104,7 +104,7 @@ export const Journey = ({
     return (
         <section className={`w-full px-3 py-12 sm:px-6 lg:px-12 ${className}`}>
             <div className="mx-auto flex max-w-[1296px] flex-col items-center gap-10 lg:gap-16">
-                <div className="flex flex-col items-center justify-center gap-4 text-center">
+                <div data-reveal className="flex flex-col items-center justify-center gap-4 text-center">
                     <TrophyIcon />
                     <h2 className={`text-[28px] font-medium leading-tight text-[var(--color-text-primary)] sm:text-[32px] ${font}`}>
                         {title}
@@ -121,7 +121,7 @@ export const Journey = ({
                         {rows.map((m, i) => {
                             const textBelow = i % 2 === 0;
                             return (
-                                <li key={`${m.year}-${m.role}`} className="relative h-full">
+                                <li key={`${m.year}-${m.role}`} data-reveal className="relative h-full">
                                     {textBelow ? (
                                         <>
                                             <Year className="top-[85px]">{m.year}</Year>
@@ -150,7 +150,7 @@ export const Journey = ({
                         className="absolute bottom-2 left-[6px] top-2 w-[2px] bg-[var(--color-text-primary)]"
                     />
                     {rows.map((m) => (
-                        <li key={`${m.year}-${m.role}`} className="relative pb-8 pl-9 last:pb-0">
+                        <li key={`${m.year}-${m.role}`} data-reveal className="relative pb-8 pl-9 last:pb-0">
                             <span
                                 aria-hidden="true"
                                 className="absolute left-0 top-1 h-[14px] w-[14px] rounded-full bg-[var(--color-primary)] bg-[linear-gradient(225deg,#2F55F0_50%,#5A7CFB_85.36%,#88C7FF_120.71%)]"

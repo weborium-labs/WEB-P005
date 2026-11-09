@@ -1,5 +1,6 @@
 import AboutSection from "../components/AboutSection"
 import ContactSection from "../components/ContactSection"
+import Footer from "../components/Footer"
 import Hero from "../components/Hero"
 import Journey from "../components/Journey"
 import Navbar from "../components/Navbar"
@@ -21,16 +22,19 @@ const LandingPage = () => {
     usePageSeo(PAGE_SLUG)
 
     return (
-        <div>
+        <>
             <Navbar />
-            <Hero pageSlug={PAGE_SLUG} />
-            <AboutSection pageSlug={PAGE_SLUG} />
-            <ResearchInterests pageSlug={PAGE_SLUG} />
-            <SelectedResearch pageSlug={PAGE_SLUG} />
-            <SelectedPatents pageSlug={PAGE_SLUG} />
-            <Journey pageSlug={PAGE_SLUG} />
-            <ContactSection pageSlug={PAGE_SLUG} />
-        </div>
+            <main className="w-full flex-1">
+                <Hero pageSlug={PAGE_SLUG} />
+                <AboutSection pageSlug={PAGE_SLUG} />
+                <ResearchInterests pageSlug={PAGE_SLUG} />
+                <SelectedResearch pageSlug={PAGE_SLUG} />
+                <SelectedPatents pageSlug={PAGE_SLUG} />
+                <Journey pageSlug={PAGE_SLUG} />
+                <ContactSection pageSlug={PAGE_SLUG} />
+            </main>
+            <Footer pageSlug="footer" />
+        </>
     )
 }
 

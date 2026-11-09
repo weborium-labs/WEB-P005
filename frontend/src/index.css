@@ -62,3 +62,17 @@
   --color-shadow-primary: rgba(47, 79, 230, 0.28);
   --color-glow-accent: rgba(59, 102, 245, 0.7);
 }
+
+/*
+ * App shell: the route outlet renders at #root, so it must be a full-height
+ * flex column. Pages that only fill part of the viewport (contact, 404,
+ * short CMS pages) then push the footer to the bottom of the screen instead
+ * of leaving a band of dead white space under it. `min-height` (not
+ * `height`) keeps long pages scrolling normally.
+ */
+#root {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}

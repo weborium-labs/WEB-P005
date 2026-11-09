@@ -65,12 +65,13 @@ const Card = ({ label, title, subtitle, href }: SelectedListItem) => {
             href={href}
             target="_blank"
             rel="noopener noreferrer"
+            data-reveal
             className={`${cardClass} transition-transform duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary-strong)]/50`}
         >
             {content}
         </a>
     ) : (
-        <article className={cardClass}>{content}</article>
+        <article data-reveal className={cardClass}>{content}</article>
     );
 };
 
@@ -79,7 +80,10 @@ export const SelectedList = ({ heading, items, className = "" }: SelectedListPro
         <div
             className={`mx-auto flex max-w-7xl flex-col items-center gap-8 rounded-[36px] px-4 pb-6 pt-8 sm:rounded-[48px] sm:px-8 sm:pb-10 sm:pt-10 lg:rounded-[64px] lg:px-[60px] lg:pb-[60px] lg:pt-12 ${glass}`}
         >
-            <h2 className="text-center font-['Google_Sans_Flex',sans-serif] text-[28px] font-medium leading-tight text-[var(--color-text-primary)] sm:text-[32px]">
+            <h2
+                data-reveal
+                className="text-center font-['Google_Sans_Flex',sans-serif] text-[28px] font-medium leading-tight text-[var(--color-text-primary)] sm:text-[32px]"
+            >
                 {heading}
             </h2>
             <div className="flex w-full flex-col gap-8">
