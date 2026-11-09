@@ -40,6 +40,7 @@ const App = () => {
   // detect change vercel1
   // detect change vercel2
   // detect change vercel3
+  // detect change vercel4
   useEffect(() => {
     void initializeAuth();
   }, []);
